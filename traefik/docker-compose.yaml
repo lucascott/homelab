@@ -1,0 +1,30 @@
+version: "3"
+networks:
+  frontend:
+    external: true
+
+services:
+  traefik:
+    image: traefik:2.6
+    restart: always
+    ports:
+      - "80:80"
+      - "443:443"
+      - "8080:8080"
+    volumes:
+      - "/var/run/docker.sock:/var/run/docker.sock:ro"
+      - "./traefik.yaml:/etc/traefik/traefik.yaml:ro"
+      - "./certs:/etc/certs"
+      - "./traefik_dynamic.yaml:/etc/traefik/traefik_dynamic.yaml:ro"
+      - "./htpasswd:/etc/traefik/htpasswd:ro"
+    networks:
+      - frontend
+    labels:
+      # https://doc.traefik.io/traefik/operations/dashboard/#secure-mode
+      - "traefik.enable=true"
+      - "traefik.http.routers.traefik-dashboard.rule=Host(`traefik.lucascott.com`) && (PathPrefix(`/api`) || PathPrefix(`/dashboard`))"
+      - "traefik.http.routers.traefik-dashboard.service=api@internal"
+      - "traefik.http.routers.traefik-dashboard.entrypoints=websecure"
+      - "traefik.http.routers.traefik-dashboard.tls=true"
+      - "traefik.http.routers.traefik-dashboard.tls.certresolver=letsencrypt"
+      - "traefik.http.routers.traefik-dashboard.middlewares=auth@file"

@@ -1,0 +1,50 @@
+global:
+  checkNewVersion: true
+  sendAnonymousUsage: false
+
+entryPoints:
+  web:
+    address: ":80"
+    http:
+      redirections:
+        entryPoint:
+          to: websecure
+          scheme: https
+          permanent: true
+  websecure:
+    address: ":443"
+
+providers:
+  docker:
+    exposedByDefault: false
+    network: frontend
+  file:
+    filename: /etc/traefik/traefik_dynamic.yaml
+    watch: true
+
+api:
+  dashboard: true
+
+log:
+  level: DEBUG
+
+certificatesResolvers:
+  letsencrypt:
+    # Enable ACME (Let's Encrypt): automatic SSL.
+    acme:
+      email: "lucascott1996@gmail.com"
+      storage: "/etc/certs/acme.json"
+      httpChallenge:
+        entryPoint: web
+
+      # CA server to use.
+      # Uncomment the line to use Let's Encrypt's staging server,
+      # leave commented to go to prod.
+      #
+      # Optional
+      # Default: "https://acme-v02.api.letsencrypt.org/directory"
+      #
+      # caServer: "https://acme-staging-v02.api.letsencrypt.org/directory"
+
+metrics:
+  prometheus: {}

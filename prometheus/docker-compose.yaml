@@ -12,8 +12,8 @@ services:
       - ./data:/prometheus:rw
     command:
       - --config.file=/etc/prometheus/prometheus.yml
+      - --storage.tsdb.path=/prometheus
       - --web.route-prefix=/
-#      - --web.external-url=/prometheus
     networks:
       - frontend  
     labels:
@@ -24,4 +24,3 @@ services:
       - "traefik.http.routers.prometheus.tls.certresolver=letsencrypt"
       - "traefik.http.services.prometheus.loadbalancer.server.port=9090"
       - "traefik.http.routers.prometheus.middlewares=add-trailing-slash@file"
-#      - "traefik.http.middlewares.prometheus-stripprefix.stripprefix.prefixes=/prometheus"

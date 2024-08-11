@@ -2,8 +2,6 @@ bind_host: 0.0.0.0
 bind_port: 80
 users:
   - name: admin
-    # This is an unsafe password. A fresh deployment requires this to be updated
-    # Instructions are available at https://github.com/AdguardTeam/AdGuardHome/wiki/Configuration#password-reset
     password: $2a$10$opJz0x.1mJRt9VcVYxQ.d..jC7qdg3IR62HgG6SyXSQUG3kf3J3K.
 auth_attempts: 5
 block_auth_min: 15
@@ -52,7 +50,7 @@ dns:
   cache_ttl_max: 0
   cache_optimistic: false
   bogus_nxdomain: []
-  aaaa_disabled: false
+  aaaa_disabled: true
   enable_dnssec: false
   edns_client_subnet: false
   max_goroutines: 300

@@ -1,20 +1,17 @@
-version: "3"
-
 networks:
-  frontend:
-    external: true
+  frontend: { external: true }
 
 services:
   grafana:
     image: grafana/grafana-oss:8.3.4
-    restart: always
+    restart: unless-stopped
     environment:
       - "GF_INSTALL_PLUGINS=grafana-clock-panel,grafana-simple-json-datasource,grafana-piechart-panel"
     volumes:
       - ./grafana.ini:/etc/grafana/grafana.ini:ro
       - ./data:/var/lib/grafana:rw
     networks:
-      - frontend  
+      - frontend
     labels:
       - "traefik.enable=true"
       - "traefik.http.routers.grafana.rule=Host(`grafana.lucascott.com`)"

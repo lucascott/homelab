@@ -1,13 +1,10 @@
-version: "3"
-
 networks:
-  frontend:
-    external: true
+  frontend: { external: true }
 
 services:
   heimdall:
     image: linuxserver/heimdall:2.5.6
-    restart: always
+    restart: unless-stopped
     environment:
       - PUID=1000
       - PGID=1000

@@ -1,0 +1,36 @@
+networks:
+  frontend: { external: true }
+
+services:
+  vaultwarden:
+    image: vaultwarden/server:latest
+    restart: unless-stopped
+    networks:
+      - frontend
+    volumes:
+      - ./data:/data
+    environment:
+      DOMAIN: https://vaultwarden.lucascott.com
+      ADMIN_TOKEN_FILE: /run/secrets/admin-token
+      # https://github.com/dani-garcia/vaultwarden/wiki/Enabling-Mobile-Client-push-notification
+      PUSH_ENABLED: true
+      PUSH_INSTALLATION_ID: ${PUSH_INSTALLATION_ID}
+      PUSH_INSTALLATION_KEY_FILE: /run/secrets/push-installation-key
+      PUSH_RELAY_URI: https://api.bitwarden.eu
+      PUSH_IDENTITY_URI: https://identity.bitwarden.eu
+    secrets:
+      - admin-token
+      - push-installation-key
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.vaultwarden.rule=Host(`vaultwarden.lucascott.com`)"
+      - "traefik.http.routers.vaultwarden.entrypoints=websecure"
+      - "traefik.http.routers.vaultwarden.tls=true"
+      - "traefik.http.routers.vaultwarden.tls.certresolver=letsencrypt"
+      - "traefik.http.services.vaultwarden.loadbalancer.server.port=80"
+
+secrets:
+  admin-token:
+    file: ./admin-token.txt
+  push-installation-key:
+    file: ./push-installation-key.txt

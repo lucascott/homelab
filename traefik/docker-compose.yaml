@@ -1,10 +1,18 @@
 networks:
   frontend: { external: true }
 
+secrets:
+  CLOUDFLARE_DNS_API_TOKEN:
+    file: CLOUDFLARE_DNS_API_TOKEN.secret
+
 services:
   traefik:
-    image: traefik:2.11
+    image: traefik:3.1.2
     restart: unless-stopped
+    secrets:
+      - CLOUDFLARE_DNS_API_TOKEN
+    environment:
+      CLOUDFLARE_DNS_API_TOKEN_FILE: /run/secrets/CLOUDFLARE_DNS_API_TOKEN
     ports:
       - "80:80"
       - "443:443"
@@ -19,7 +27,7 @@ services:
       - frontend
     labels:
       # https://doc.traefik.io/traefik/operations/dashboard/#secure-mode
-      - "traefik.enable=true"
+      - "traefik.enable=false"
       - "traefik.http.routers.traefik-dashboard.rule=Host(`traefik.lucascott.com`) && (PathPrefix(`/api`) || PathPrefix(`/dashboard`))"
       - "traefik.http.routers.traefik-dashboard.service=api@internal"
       - "traefik.http.routers.traefik-dashboard.entrypoints=websecure"

@@ -47,6 +47,12 @@ certificatesResolvers:
       # Default: "https://acme-v02.api.letsencrypt.org/directory"
       #
       # caServer: "https://acme-staging-v02.api.letsencrypt.org/directory"
-
+  letsencrypt-dns:
+    acme:
+      email: "lucascott1996@gmail.com"
+      storage: "/etc/certs/acme.json"
+      dnsChallenge:
+        provider: cloudflare
+        resolvers: ["1.1.1.1:53", "8.8.8.8:53"]
 metrics:
   prometheus: {}

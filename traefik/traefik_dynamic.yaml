@@ -5,6 +5,3 @@ http:
         regex: "^(https?://[^/]+/[a-z0-9_]+)$"
         replacement: "${1}/"
         permanent: true
-    auth:
-      basicAuth:
-        usersFile: "/etc/traefik/htpasswd"

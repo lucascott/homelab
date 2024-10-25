@@ -15,7 +15,7 @@ entryPoints:
 providers:
   docker:
     exposedByDefault: false
-    network: frontend
+    network: reverse-proxy
   file:
     filename: /etc/traefik/traefik_dynamic.yaml
     watch: true
@@ -24,35 +24,29 @@ api:
   dashboard: true
 
 log:
-  format: json
   level: DEBUG
 
-accessLog:
-  format: json
+accessLog: {}
 
 certificatesResolvers:
   letsencrypt:
-    # Enable ACME (Let's Encrypt): automatic SSL.
     acme:
-      email: "lucascott1996@gmail.com"
-      storage: "/etc/certs/acme.json"
+      email: "luca@lucascott.com"
+      storage: "/etc/certs/acme-http.json"
       httpChallenge:
         entryPoint: web
-
       # CA server to use.
       # Uncomment the line to use Let's Encrypt's staging server,
       # leave commented to go to prod.
-      #
-      # Optional
-      # Default: "https://acme-v02.api.letsencrypt.org/directory"
-      #
       # caServer: "https://acme-staging-v02.api.letsencrypt.org/directory"
+
   letsencrypt-dns:
     acme:
-      email: "lucascott1996@gmail.com"
-      storage: "/etc/certs/acme.json"
+      email: "luca@lucascott.com"
+      storage: "/etc/certs/acme-dns.json"
       dnsChallenge:
         provider: cloudflare
         resolvers: ["1.1.1.1:53", "8.8.8.8:53"]
+
 metrics:
   prometheus: {}

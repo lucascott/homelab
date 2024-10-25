@@ -1,5 +1,5 @@
 networks:
-  frontend: { external: true }
+  reverse-proxy: { external: true }
 
 services:
   prometheus:
@@ -13,12 +13,13 @@ services:
       - --storage.tsdb.path=/prometheus
       - --web.route-prefix=/
     networks:
-      - frontend  
+      - reverse-proxy
     labels:
       - "traefik.enable=false"
       - "traefik.http.routers.prometheus.rule=Host(`prometheus.lucascott.com`)"
       - "traefik.http.routers.prometheus.entrypoints=websecure"
       - "traefik.http.routers.prometheus.tls=true"
-      - "traefik.http.routers.prometheus.tls.certresolver=letsencrypt"
+      - "traefik.http.routers.prometheus.tls.certresolver=letsencrypt-dns"
+      - "traefik.http.routers.prometheus.tls.domains[0].sans=*.lucascott.com"
       - "traefik.http.services.prometheus.loadbalancer.server.port=9090"
       - "traefik.http.routers.prometheus.middlewares=add-trailing-slash@file"

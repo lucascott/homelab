@@ -1,5 +1,5 @@
 networks:
-  frontend: { external: true }
+  reverse-proxy: { external: true }
 
 services:
   grafana:
@@ -11,11 +11,12 @@ services:
       - ./grafana.ini:/etc/grafana/grafana.ini:ro
       - ./data:/var/lib/grafana:rw
     networks:
-      - frontend
+      - reverse-proxy
     labels:
       - "traefik.enable=true"
       - "traefik.http.routers.grafana.rule=Host(`grafana.lucascott.com`)"
       - "traefik.http.routers.grafana.entrypoints=websecure"
       - "traefik.http.routers.grafana.tls=true"
-      - "traefik.http.routers.grafana.tls.certresolver=letsencrypt"
+      - "traefik.http.routers.grafana.tls.certresolver=letsencrypt-dns"
+      - "traefik.http.routers.grafana.tls.domains[0].sans=*.lucascott.com"
       - "traefik.http.services.grafana.loadbalancer.server.port=3000"

@@ -1,13 +1,18 @@
 networks:
   reverse-proxy: { external: true }
 
+volumes:
+  data:
+
 services:
   portainer:
-    image: portainer/portainer-ce:2.19.4-alpine
+    image: portainer/portainer-ce:alpine
+    container_name: portainer
     restart: unless-stopped
+    env_file: AGENT_SECRET.secret
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
-      - ./data:/data
+      - data:/data
     networks:
       - reverse-proxy
     labels:

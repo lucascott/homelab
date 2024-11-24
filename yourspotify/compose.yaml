@@ -1,0 +1,57 @@
+networks:
+  reverse-proxy: { external: true }
+
+volumes:
+  database:
+
+services:
+  server:
+    image: yooooomi/your_spotify_server
+    restart: unless-stopped
+    networks:
+      - default
+      - reverse-proxy
+    links:
+      - mongo
+    depends_on:
+      - mongo
+    env_file: SPOTIFY_SECRET.secret
+    environment:
+      API_ENDPOINT: https://yourspotify.lucascott.com/api
+      CLIENT_ENDPOINT: https://yourspotify.lucascott.com
+      SPOTIFY_PUBLIC: a824ddd1243546459415bc2eaba3db6c
+      TIMEZONE: Europe/Helsinki
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.yourspotify-api.rule=Host(`yourspotify.lucascott.com`) && PathPrefix(`/api`)"
+      - "traefik.http.routers.yourspotify-api.entrypoints=websecure"
+      - "traefik.http.routers.yourspotify-api.tls=true"
+      - "traefik.http.routers.yourspotify-api.tls.certresolver=letsencrypt-dns"
+      - "traefik.http.routers.yourspotify-api.tls.domains[0].sans=*.lucascott.com"
+      - "traefik.http.middlewares.yourspotify-api-strip.stripprefix.prefixes=/api"
+      - "traefik.http.routers.yourspotify-api.middlewares=yourspotify-api-strip@docker"
+      - "traefik.http.services.yourspotify-api.loadbalancer.server.port=8080"
+
+  mongo:
+    image: mongo:6
+    restart: unless-stopped
+    volumes:
+      - database:/data/db
+
+  web:
+    image: yooooomi/your_spotify_client
+    restart: unless-stopped
+    networks:
+      - default
+      - reverse-proxy
+    environment:
+      API_ENDPOINT: https://yourspotify.lucascott.com/api
+      TIMEZONE: Europe/Helsinki
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.yourspotify.rule=Host(`yourspotify.lucascott.com`)"
+      - "traefik.http.routers.yourspotify.entrypoints=websecure"
+      - "traefik.http.routers.yourspotify.tls=true"
+      - "traefik.http.routers.yourspotify.tls.certresolver=letsencrypt-dns"
+      - "traefik.http.routers.yourspotify.tls.domains[0].sans=*.lucascott.com"
+      - "traefik.http.services.yourspotify.loadbalancer.server.port=3000"

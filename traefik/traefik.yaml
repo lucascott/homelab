@@ -11,6 +11,11 @@ entryPoints:
           to: websecure
   websecure:
     address: ":443"
+    transport:
+      respondingTimeouts:
+        readTimeout: 600s
+        idleTimeout: 600s
+        writeTimeout: 600s
 
 providers:
   docker:
@@ -25,7 +30,7 @@ api:
   insecure: true
 
 log:
-  level: DEBUG
+  level: INFO
 
 accessLog: {}
 

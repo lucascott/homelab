@@ -1,0 +1,10 @@
+services:
+  portainer-agent:
+    image: portainer/agent:latest
+    restart: unless-stopped
+    ports:
+      - 9001:9001
+    env_file: AGENT_SECRET.secret
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+

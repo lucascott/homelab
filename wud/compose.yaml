@@ -1,0 +1,22 @@
+secrets:
+  TELEGRAM_BOT_TOKEN:
+    file: TELEGRAM_BOT_TOKEN.secret
+
+volumes:
+  data:
+
+services:
+  whatsupdocker:
+    image: getwud/wud:latest
+    restart: unless-stopped
+    secrets:
+      - TELEGRAM_BOT_TOKEN
+    environment:
+      # double underscore is unconventional yet intentional (https://getwud.github.io/wud/#/configuration/?id=secret-management)
+      - WUD_TRIGGER_TELEGRAM_PERSONAL_BOTTOKEN__FILE=/run/secrets/TELEGRAM_BOT_TOKEN
+      - WUD_TRIGGER_TELEGRAM_PERSONAL_CHATID=30646137
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+      - data:/store
+    ports:
+      - 3000:3000

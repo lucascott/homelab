@@ -1,0 +1,38 @@
+networks:
+  prometheus: { external: true }
+
+services:
+  prometheus:
+    image: prom/prometheus:v3.1.0
+    restart: unless-stopped
+    user: 1000:1001
+    volumes:
+      - ./prometheus.yml:/etc/prometheus/prometheus.yml
+      - ./data:/prometheus
+    command:
+      - --config.file=/etc/prometheus/prometheus.yml
+      - --storage.tsdb.path=/prometheus
+    networks:
+      - default
+      - prometheus
+    labels:
+      - wud.tag.include=^v\d+\.\d+\.\d+$
+      - wud.link.template=https://github.com/prometheus/prometheus/releases
+
+  cadvisor:
+    image: gcr.io/cadvisor/cadvisor:v0.51.0
+    restart: unless-stopped
+    volumes:
+      - /:/rootfs:ro
+      - /var/run:/var/run:ro
+      - /sys:/sys:ro
+      - /var/lib/docker/:/var/lib/docker:ro
+      - /dev/disk/:/dev/disk:ro
+    privileged: true
+    devices:
+      - /dev/kmsg:/dev/kmsg
+    command:
+      - '--store_container_labels=false'
+      - '--enable_metrics=cpu,memory,network'
+      - '--docker_only=true'
+      - '--allow_dynamic_housekeeping=true'

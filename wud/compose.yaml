@@ -2,6 +2,9 @@ secrets:
   TELEGRAM_BOT_TOKEN:
     file: TELEGRAM_BOT_TOKEN.secret
 
+networks:
+  reverse-proxy: { external: true }
+
 volumes:
   data:
 
@@ -18,5 +21,15 @@ services:
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
       - data:/store
-    ports:
-      - 3000:3000
+    networks:
+      - reverse-proxy
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.wud.rule=Host(`wud.lucascott.com`)"
+      - "traefik.http.routers.wud.entrypoints=websecure"
+      - "traefik.http.routers.wud.tls=true"
+      - "traefik.http.routers.wud.tls.certresolver=letsencrypt-dns"
+      - "traefik.http.routers.wud.tls.domains[0].sans=*.lucascott.com"
+      - "traefik.http.routers.wud.middlewares=internalOnly@file"
+      - "traefik.http.services.wud.loadbalancer.server.port=3000"
+      - wud.link.template=https://github.com/getwud/wud/releases

@@ -5,3 +5,11 @@ http:
         regex: "^(https?://[^/]+/[a-z0-9_]+)$"
         replacement: "${1}/"
         permanent: true
+
+    internalOnly:
+      ipAllowList:
+        sourceRange:
+          - "127.0.0.1/32" # localhost
+          - "192.168.1.0/24" # LAN
+          - "172.16.0.0/12" # Tailscale LAN
+          - "100.64.0.0/10" # Tailscale LAN

@@ -22,4 +22,5 @@ services:
       - "traefik.http.routers.portainer.tls=true"
       - "traefik.http.routers.portainer.tls.certresolver=letsencrypt-dns"
       - "traefik.http.routers.portainer.tls.domains[0].sans=*.lucascott.com"
+      - "traefik.http.routers.portainer.middlewares=internalOnly@file"
       - "traefik.http.services.portainer.loadbalancer.server.port=9000"

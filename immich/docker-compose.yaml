@@ -39,6 +39,7 @@ services:
       - "traefik.http.routers.immich.tls=true"
       - "traefik.http.routers.immich.tls.certresolver=letsencrypt-dns"
       - "traefik.http.routers.immich.tls.domains[0].sans=*.lucascott.com"
+      - "traefik.http.routers.immich.middlewares=internalOnly@file"
 
   immich-machine-learning:
     container_name: immich_machine_learning

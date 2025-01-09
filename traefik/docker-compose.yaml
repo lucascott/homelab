@@ -1,5 +1,6 @@
 networks:
   reverse-proxy: { external: true }
+  prometheus: { external: true }
 
 secrets:
   CLOUDFLARE_DNS_API_TOKEN:
@@ -24,6 +25,7 @@ services:
       - "./certs:/etc/certs"
     networks:
       - reverse-proxy
+      - prometheus
     labels:
       - wud.watch.digest=true
       - wud.tag.exclude=^.*$

@@ -1,0 +1,25 @@
+networks:
+  reverse-proxy: { external: true }
+
+services:
+  homepage:
+    image: ghcr.io/gethomepage/homepage:latest
+    restart: unless-stopped
+    user: 1000:1001
+    networks:
+      - reverse-proxy
+    environment:
+      LOG_TARGETS: stdout
+    volumes:
+      - ./config:/app/config
+      - /mnt/ssd/.empty:/mnt/ssd:ro
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.homepage.rule=Host(`home.lucascott.com`)"
+      - "traefik.http.routers.homepage.entrypoints=websecure"
+      - "traefik.http.routers.homepage.tls=true"
+      - "traefik.http.routers.homepage.tls.certresolver=letsencrypt-dns"
+      - "traefik.http.routers.homepage.tls.domains[0].sans=*.lucascott.com"
+      - "traefik.http.routers.homepage.middlewares=internalOnly@file"
+      - "traefik.http.services.homepage.loadbalancer.server.port=3000"
+      - wud.link.template=https://github.com/gethomepage/homepage/releases

@@ -1,17 +1,20 @@
 networks:
   reverse-proxy: { external: true }
+  prometheus: { external: true }
 
 services:
   grafana:
-    image: grafana/grafana-oss:8.3.4
+    image: grafana/grafana:latest
     restart: unless-stopped
+    user: 1000:1001
     environment:
       - "GF_INSTALL_PLUGINS=grafana-clock-panel,grafana-simple-json-datasource,grafana-piechart-panel"
     volumes:
       - ./grafana.ini:/etc/grafana/grafana.ini:ro
-      - ./data:/var/lib/grafana:rw
+      - ./data:/var/lib/grafana
     networks:
       - reverse-proxy
+      - prometheus
     labels:
       - "traefik.enable=true"
       - "traefik.http.routers.grafana.rule=Host(`grafana.lucascott.com`)"
@@ -19,4 +22,5 @@ services:
       - "traefik.http.routers.grafana.tls=true"
       - "traefik.http.routers.grafana.tls.certresolver=letsencrypt-dns"
       - "traefik.http.routers.grafana.tls.domains[0].sans=*.lucascott.com"
+      - "traefik.http.routers.grafana.middlewares=internalOnly@file"
       - "traefik.http.services.grafana.loadbalancer.server.port=3000"

@@ -6,7 +6,7 @@ volumes:
 
 services:
   server:
-    image: yooooomi/your_spotify_server
+    image: yooooomi/your_spotify_server:latest
     restart: unless-stopped
     networks:
       - default
@@ -37,9 +37,12 @@ services:
     restart: unless-stopped
     volumes:
       - database:/data/db
+    labels:
+      - wud.watch.digest=true
+      - wud.tag.exclude=^.*$
 
   web:
-    image: yooooomi/your_spotify_client
+    image: yooooomi/your_spotify_client:latest
     restart: unless-stopped
     networks:
       - default

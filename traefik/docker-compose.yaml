@@ -24,3 +24,7 @@ services:
       - "./certs:/etc/certs"
     networks:
       - reverse-proxy
+    labels:
+      - wud.watch.digest=true
+      - wud.tag.exclude=^.*$
+      - wud.link.template=https://github.com/traefik/traefik/releases

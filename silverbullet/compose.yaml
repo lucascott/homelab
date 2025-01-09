@@ -1,0 +1,22 @@
+networks:
+  reverse-proxy: { external:  true }
+
+services:
+  silverbullet:
+    image: zefhemel/silverbullet:edge
+    restart: unless-stopped
+    env_file:
+      - ./SB_USER.secret
+    volumes:
+      - ./space:/space
+    networks:
+      - reverse-proxy
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.silverbullet.rule=Host(`notes.lucascott.com`)"
+      - "traefik.http.routers.silverbullet.entrypoints=websecure"
+      - "traefik.http.routers.silverbullet.tls=true"
+      - "traefik.http.routers.silverbullet.tls.certresolver=letsencrypt-dns"
+      - "traefik.http.routers.silverbullet.tls.domains[0].sans=*.lucascott.com"
+      - "traefik.http.routers.silverbullet.middlewares=internalOnly@file"
+      - wud.link.template=https://github.com/silverbulletmd/silverbullet/releases

@@ -9,3 +9,5 @@ services:
     volumes:
       - ./conf:/opt/adguardhome/conf
       - ./data:/opt/adguardhome/work
+    labels:
+      - wud.link.template=https://github.com/AdguardTeam/AdGuardHome/releases

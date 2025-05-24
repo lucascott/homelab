@@ -1,6 +1,8 @@
 networks:
-  reverse-proxy: { external: true }
-  prometheus: { external: true }
+  reverse-proxy:
+    external: true
+  prometheus:
+    external: true
 
 services:
   grafana:
@@ -16,11 +18,12 @@ services:
       - reverse-proxy
       - prometheus
     labels:
-      - "traefik.enable=true"
-      - "traefik.http.routers.grafana.rule=Host(`grafana.lucascott.com`)"
-      - "traefik.http.routers.grafana.entrypoints=websecure"
-      - "traefik.http.routers.grafana.tls=true"
-      - "traefik.http.routers.grafana.tls.certresolver=letsencrypt-dns"
-      - "traefik.http.routers.grafana.tls.domains[0].sans=*.lucascott.com"
-      - "traefik.http.routers.grafana.middlewares=internalOnly@file"
-      - "traefik.http.services.grafana.loadbalancer.server.port=3000"
+      - traefik.enable=true
+      - traefik.http.routers.${COMPOSE_PROJECT_NAME}.rule=Host(`${COMPOSE_PROJECT_NAME}.lucascott.com`)
+      - traefik.http.routers.${COMPOSE_PROJECT_NAME}.entrypoints=websecure
+      - traefik.http.routers.${COMPOSE_PROJECT_NAME}.tls=true
+      - traefik.http.routers.${COMPOSE_PROJECT_NAME}.tls.certresolver=letsencrypt-dns
+      - traefik.http.routers.${COMPOSE_PROJECT_NAME}.tls.domains[0].sans=*.lucascott.com
+      - traefik.http.routers.${COMPOSE_PROJECT_NAME}.middlewares=internalOnly@file
+      - traefik.http.services.${COMPOSE_PROJECT_NAME}.loadbalancer.server.port=3000
+      - wud.link.template=https://github.com/grafana/grafana/releases

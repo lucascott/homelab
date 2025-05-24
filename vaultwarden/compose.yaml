@@ -1,5 +1,6 @@
 networks:
-  reverse-proxy: { external: true }
+  reverse-proxy:
+    external: true
 
 services:
   vaultwarden:
@@ -10,7 +11,7 @@ services:
     volumes:
       - ./data:/data
     environment:
-      DOMAIN: https://vaultwarden.lucascott.com
+      DOMAIN: https://${COMPOSE_PROJECT_NAME}.lucascott.com
       ADMIN_TOKEN_FILE: /run/secrets/admin-token
       # https://github.com/dani-garcia/vaultwarden/wiki/Enabling-Mobile-Client-push-notification
       PUSH_ENABLED: true
@@ -22,13 +23,13 @@ services:
       - admin-token
       - push-installation-key
     labels:
-      - "traefik.enable=true"
-      - "traefik.http.routers.vaultwarden.rule=Host(`vaultwarden.lucascott.com`)"
-      - "traefik.http.routers.vaultwarden.entrypoints=websecure"
-      - "traefik.http.routers.vaultwarden.tls=true"
-      - "traefik.http.routers.vaultwarden.tls.certresolver=letsencrypt-dns"
-      - "traefik.http.routers.vaultwarden.tls.domains[0].sans=*.lucascott.com"
-      - "traefik.http.routers.vaultwarden.middlewares=internalOnly@file"
+      - traefik.enable=true
+      - traefik.http.routers.${COMPOSE_PROJECT_NAME}.rule=Host(`${COMPOSE_PROJECT_NAME}.lucascott.com`)
+      - traefik.http.routers.${COMPOSE_PROJECT_NAME}.entrypoints=websecure
+      - traefik.http.routers.${COMPOSE_PROJECT_NAME}.tls=true
+      - traefik.http.routers.${COMPOSE_PROJECT_NAME}.tls.certresolver=letsencrypt-dns
+      - traefik.http.routers.${COMPOSE_PROJECT_NAME}.tls.domains[0].sans=*.lucascott.com
+      - traefik.http.routers.${COMPOSE_PROJECT_NAME}.middlewares=internalOnly@file
       - wud.link.template=https://github.com/dani-garcia/vaultwarden/releases
 secrets:
   admin-token:

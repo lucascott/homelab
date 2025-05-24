@@ -1,5 +1,6 @@
 networks:
-  reverse-proxy: { external: true }
+  reverse-proxy:
+    external: true
 
 secrets:
   DB_PASSWORD:
@@ -33,15 +34,14 @@ services:
       - default
       - reverse-proxy
     labels:
-      - "traefik.enable=true"
-      - "traefik.http.routers.immich.rule=Host(`photos.lucascott.com`)"
-      - "traefik.http.routers.immich.entrypoints=websecure"
-      - "traefik.http.routers.immich.tls=true"
-      - "traefik.http.routers.immich.tls.certresolver=letsencrypt-dns"
-      - "traefik.http.routers.immich.tls.domains[0].sans=*.lucascott.com"
-      - "traefik.http.routers.immich.middlewares=internalOnly@file"
-      - "wud.link.template=https://github.com/immich-app/immich/releases"
-
+      - traefik.enable=true
+      - traefik.http.routers.${COMPOSE_PROJECT_NAME}.rule=Host(`photos.lucascott.com`)
+      - traefik.http.routers.${COMPOSE_PROJECT_NAME}.entrypoints=websecure
+      - traefik.http.routers.${COMPOSE_PROJECT_NAME}.tls=true
+      - traefik.http.routers.${COMPOSE_PROJECT_NAME}.tls.certresolver=letsencrypt-dns
+      - traefik.http.routers.${COMPOSE_PROJECT_NAME}.tls.domains[0].sans=*.lucascott.com
+      - traefik.http.routers.${COMPOSE_PROJECT_NAME}.middlewares=internalOnly@file
+      - wud.link.template=https://github.com/immich-app/immich/releases
   immich-machine-learning:
     container_name: immich_machine_learning
     # For hardware acceleration, add one of -[armnn, cuda, openvino] to the image tag.
@@ -98,5 +98,4 @@ services:
     restart: unless-stopped
 
 volumes:
-  model-cache:
-
+  model-cache: {}

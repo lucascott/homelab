@@ -1,5 +1,6 @@
 networks:
-  reverse-proxy: { external: true }
+  reverse-proxy:
+    external: true
 
 services:
   homepage:
@@ -9,17 +10,18 @@ services:
     networks:
       - reverse-proxy
     environment:
+      HOMEPAGE_ALLOWED_HOSTS: home.lucascott.com
       LOG_TARGETS: stdout
     volumes:
       - ./config:/app/config
       - /mnt/ssd/.empty:/mnt/ssd:ro
     labels:
-      - "traefik.enable=true"
-      - "traefik.http.routers.homepage.rule=Host(`home.lucascott.com`)"
-      - "traefik.http.routers.homepage.entrypoints=websecure"
-      - "traefik.http.routers.homepage.tls=true"
-      - "traefik.http.routers.homepage.tls.certresolver=letsencrypt-dns"
-      - "traefik.http.routers.homepage.tls.domains[0].sans=*.lucascott.com"
-      - "traefik.http.routers.homepage.middlewares=internalOnly@file"
-      - "traefik.http.services.homepage.loadbalancer.server.port=3000"
+      - traefik.enable=true
+      - traefik.http.routers.${COMPOSE_PROJECT_NAME}.rule=Host(`home.lucascott.com`)
+      - traefik.http.routers.${COMPOSE_PROJECT_NAME}.entrypoints=websecure
+      - traefik.http.routers.${COMPOSE_PROJECT_NAME}.tls=true
+      - traefik.http.routers.${COMPOSE_PROJECT_NAME}.tls.certresolver=letsencrypt-dns
+      - traefik.http.routers.${COMPOSE_PROJECT_NAME}.tls.domains[0].sans=*.lucascott.com
+      - traefik.http.routers.${COMPOSE_PROJECT_NAME}.middlewares=internalOnly@file
+      - traefik.http.services.${COMPOSE_PROJECT_NAME}.loadbalancer.server.port=3000
       - wud.link.template=https://github.com/gethomepage/homepage/releases

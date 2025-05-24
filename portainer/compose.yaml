@@ -1,8 +1,9 @@
 networks:
-  reverse-proxy: { external: true }
+  reverse-proxy:
+    external: true
 
 volumes:
-  data:
+  data: {}
 
 services:
   portainer:
@@ -16,11 +17,12 @@ services:
     networks:
       - reverse-proxy
     labels:
-      - "traefik.enable=true"
-      - "traefik.http.routers.portainer.rule=Host(`portainer.lucascott.com`)"
-      - "traefik.http.routers.portainer.entrypoints=websecure"
-      - "traefik.http.routers.portainer.tls=true"
-      - "traefik.http.routers.portainer.tls.certresolver=letsencrypt-dns"
-      - "traefik.http.routers.portainer.tls.domains[0].sans=*.lucascott.com"
-      - "traefik.http.routers.portainer.middlewares=internalOnly@file"
-      - "traefik.http.services.portainer.loadbalancer.server.port=9000"
+      - traefik.enable=true
+      - traefik.http.routers.${COMPOSE_PROJECT_NAME}.rule=Host(`${COMPOSE_PROJECT_NAME}.lucascott.com`)
+      - traefik.http.routers.${COMPOSE_PROJECT_NAME}.entrypoints=websecure
+      - traefik.http.routers.${COMPOSE_PROJECT_NAME}.tls=true
+      - traefik.http.routers.${COMPOSE_PROJECT_NAME}.tls.certresolver=letsencrypt-dns
+      - traefik.http.routers.${COMPOSE_PROJECT_NAME}.tls.domains[0].sans=*.lucascott.com
+      - traefik.http.routers.${COMPOSE_PROJECT_NAME}.middlewares=internalOnly@file
+      - traefik.http.services.${COMPOSE_PROJECT_NAME}.loadbalancer.server.port=9000
+      - wud.link.template=https://github.com/portainer/portainer/releases

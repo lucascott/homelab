@@ -3,10 +3,11 @@ secrets:
     file: TELEGRAM_BOT_TOKEN.secret
 
 networks:
-  reverse-proxy: { external: true }
+  reverse-proxy:
+    external: true
 
 volumes:
-  data:
+  data: {}
 
 services:
   whatsupdocker:
@@ -24,12 +25,12 @@ services:
     networks:
       - reverse-proxy
     labels:
-      - "traefik.enable=true"
-      - "traefik.http.routers.wud.rule=Host(`wud.lucascott.com`)"
-      - "traefik.http.routers.wud.entrypoints=websecure"
-      - "traefik.http.routers.wud.tls=true"
-      - "traefik.http.routers.wud.tls.certresolver=letsencrypt-dns"
-      - "traefik.http.routers.wud.tls.domains[0].sans=*.lucascott.com"
-      - "traefik.http.routers.wud.middlewares=internalOnly@file"
-      - "traefik.http.services.wud.loadbalancer.server.port=3000"
+      - traefik.enable=true
+      - traefik.http.routers.${COMPOSE_PROJECT_NAME}.rule=Host(`${COMPOSE_PROJECT_NAME}.lucascott.com`)
+      - traefik.http.routers.${COMPOSE_PROJECT_NAME}.entrypoints=websecure
+      - traefik.http.routers.${COMPOSE_PROJECT_NAME}.tls=true
+      - traefik.http.routers.${COMPOSE_PROJECT_NAME}.tls.certresolver=letsencrypt-dns
+      - traefik.http.routers.${COMPOSE_PROJECT_NAME}.tls.domains[0].sans=*.lucascott.com
+      - traefik.http.routers.${COMPOSE_PROJECT_NAME}.middlewares=internalOnly@file
+      - traefik.http.services.${COMPOSE_PROJECT_NAME}.loadbalancer.server.port=3000
       - wud.link.template=https://github.com/getwud/wud/releases

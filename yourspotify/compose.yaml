@@ -1,8 +1,9 @@
 networks:
-  reverse-proxy: { external: true }
+  reverse-proxy:
+    external: true
 
 volumes:
-  database:
+  database: {}
 
 services:
   server:
@@ -17,21 +18,22 @@ services:
       - mongo
     env_file: SPOTIFY_SECRET.secret
     environment:
-      API_ENDPOINT: https://yourspotify.lucascott.com/api
-      CLIENT_ENDPOINT: https://yourspotify.lucascott.com
+      API_ENDPOINT: https://${COMPOSE_PROJECT_NAME}.lucascott.com/api
+      CLIENT_ENDPOINT: https://${COMPOSE_PROJECT_NAME}.lucascott.com
       SPOTIFY_PUBLIC: a824ddd1243546459415bc2eaba3db6c
       TIMEZONE: Europe/Helsinki
     labels:
-      - "traefik.enable=true"
-      - "traefik.http.routers.yourspotify-api.rule=Host(`yourspotify.lucascott.com`) && PathPrefix(`/api`)"
-      - "traefik.http.routers.yourspotify-api.entrypoints=websecure"
-      - "traefik.http.routers.yourspotify-api.tls=true"
-      - "traefik.http.routers.yourspotify-api.tls.certresolver=letsencrypt-dns"
-      - "traefik.http.routers.yourspotify-api.tls.domains[0].sans=*.lucascott.com"
-      - "traefik.http.middlewares.yourspotify-api-strip.stripprefix.prefixes=/api"
-      - "traefik.http.routers.yourspotify-api.middlewares=yourspotify-api-strip@docker"
-      - "traefik.http.services.yourspotify-api.loadbalancer.server.port=8080"
 
+      - traefik.enable=true
+      - traefik.http.routers.${COMPOSE_PROJECT_NAME}-api.rule=Host(`${COMPOSE_PROJECT_NAME}.lucascott.com`)
+        && PathPrefix(`/api`)
+      - traefik.http.routers.${COMPOSE_PROJECT_NAME}-api.entrypoints=websecure
+      - traefik.http.routers.${COMPOSE_PROJECT_NAME}-api.tls=true
+      - traefik.http.routers.${COMPOSE_PROJECT_NAME}-api.tls.certresolver=letsencrypt-dns
+      - traefik.http.routers.${COMPOSE_PROJECT_NAME}-api.tls.domains[0].sans=*.lucascott.com
+      - traefik.http.middlewares.${COMPOSE_PROJECT_NAME}-api-strip.stripprefix.prefixes=/api
+      - traefik.http.routers.${COMPOSE_PROJECT_NAME}-api.middlewares=yourspotify-api-strip@docker
+      - traefik.http.services.${COMPOSE_PROJECT_NAME}-api.loadbalancer.server.port=8080
   mongo:
     image: mongo:6
     restart: unless-stopped
@@ -48,13 +50,13 @@ services:
       - default
       - reverse-proxy
     environment:
-      API_ENDPOINT: https://yourspotify.lucascott.com/api
+      API_ENDPOINT: https://${COMPOSE_PROJECT_NAME}.lucascott.com/api
       TIMEZONE: Europe/Helsinki
     labels:
-      - "traefik.enable=true"
-      - "traefik.http.routers.yourspotify.rule=Host(`yourspotify.lucascott.com`)"
-      - "traefik.http.routers.yourspotify.entrypoints=websecure"
-      - "traefik.http.routers.yourspotify.tls=true"
-      - "traefik.http.routers.yourspotify.tls.certresolver=letsencrypt-dns"
-      - "traefik.http.routers.yourspotify.tls.domains[0].sans=*.lucascott.com"
-      - "traefik.http.services.yourspotify.loadbalancer.server.port=3000"
+      - traefik.enable=true
+      - traefik.http.routers.${COMPOSE_PROJECT_NAME}.rule=Host(`${COMPOSE_PROJECT_NAME}.lucascott.com`)
+      - traefik.http.routers.${COMPOSE_PROJECT_NAME}.entrypoints=websecure
+      - traefik.http.routers.${COMPOSE_PROJECT_NAME}.tls=true
+      - traefik.http.routers.${COMPOSE_PROJECT_NAME}.tls.certresolver=letsencrypt-dns
+      - traefik.http.routers.${COMPOSE_PROJECT_NAME}.tls.domains[0].sans=*.lucascott.com
+      - traefik.http.services.${COMPOSE_PROJECT_NAME}.loadbalancer.server.port=3000

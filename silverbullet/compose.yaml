@@ -1,9 +1,10 @@
 networks:
-  reverse-proxy: { external:  true }
+  reverse-proxy:
+    external: true
 
 services:
   silverbullet:
-    image: zefhemel/silverbullet:edge
+    image: zefhemel/silverbullet:latest
     restart: unless-stopped
     env_file:
       - ./SB_USER.secret
@@ -12,11 +13,11 @@ services:
     networks:
       - reverse-proxy
     labels:
-      - "traefik.enable=true"
-      - "traefik.http.routers.silverbullet.rule=Host(`notes.lucascott.com`)"
-      - "traefik.http.routers.silverbullet.entrypoints=websecure"
-      - "traefik.http.routers.silverbullet.tls=true"
-      - "traefik.http.routers.silverbullet.tls.certresolver=letsencrypt-dns"
-      - "traefik.http.routers.silverbullet.tls.domains[0].sans=*.lucascott.com"
-      - "traefik.http.routers.silverbullet.middlewares=internalOnly@file"
+      - traefik.enable=true
+      - traefik.http.routers.${COMPOSE_PROJECT_NAME}.rule=Host(`notes.lucascott.com`)
+      - traefik.http.routers.${COMPOSE_PROJECT_NAME}.entrypoints=websecure
+      - traefik.http.routers.${COMPOSE_PROJECT_NAME}.tls=true
+      - traefik.http.routers.${COMPOSE_PROJECT_NAME}.tls.certresolver=letsencrypt-dns
+      - traefik.http.routers.${COMPOSE_PROJECT_NAME}.tls.domains[0].sans=*.lucascott.com
+      - traefik.http.routers.${COMPOSE_PROJECT_NAME}.middlewares=internalOnly@file
       - wud.link.template=https://github.com/silverbulletmd/silverbullet/releases

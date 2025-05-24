@@ -14,3 +14,7 @@ scrape_configs:
   - job_name: 'cadvisor'
     static_configs:
       - targets: ['cadvisor:8080']
+
+  - job_name: 'bme280'
+    static_configs:
+      - targets: ['192.168.1.116:80']

@@ -3,7 +3,7 @@ networks:
 
 services:
   prometheus:
-    image: prom/prometheus:v3.1.0
+    image: prom/prometheus:v3.4.0
     restart: unless-stopped
     user: 1000:1001
     volumes:
@@ -20,7 +20,7 @@ services:
       - wud.link.template=https://github.com/prometheus/prometheus/releases
 
   cadvisor:
-    image: gcr.io/cadvisor/cadvisor:v0.51.0
+    image: gcr.io/cadvisor/cadvisor:v0.52.1
     restart: unless-stopped
     volumes:
       - /:/rootfs:ro

@@ -10,7 +10,7 @@ services:
     restart: unless-stopped
     user: 1000:1001
     environment:
-      - "GF_INSTALL_PLUGINS=grafana-clock-panel,grafana-simple-json-datasource,grafana-piechart-panel"
+      - GF_INSTALL_PLUGINS=grafana-clock-panel
     volumes:
       - ./grafana.ini:/etc/grafana/grafana.ini:ro
       - ./data:/var/lib/grafana

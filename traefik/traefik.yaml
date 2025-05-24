@@ -35,12 +35,12 @@ log:
 accessLog: {}
 
 certificatesResolvers:
-  letsencrypt:
-    acme:
-      email: "luca@lucascott.com"
-      storage: "/etc/certs/acme-http.json"
-      httpChallenge:
-        entryPoint: web
+#  letsencrypt:
+#    acme:
+#      email: "luca@lucascott.com"
+#      storage: "/etc/certs/acme-http.json"
+#      httpChallenge:
+#        entryPoint: web
       # CA server to use.
       # Uncomment the line to use Let's Encrypt's staging server,
       # leave commented to go to prod.

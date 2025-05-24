@@ -19,6 +19,8 @@ services:
       # double underscore is unconventional yet intentional (https://getwud.github.io/wud/#/configuration/?id=secret-management)
       - WUD_TRIGGER_TELEGRAM_PERSONAL_BOTTOKEN__FILE=/run/secrets/TELEGRAM_BOT_TOKEN
       - WUD_TRIGGER_TELEGRAM_PERSONAL_CHATID=30646137
+      - WUD_TRIGGER_DOCKER_UPDATE_AUTO=false
+      - WUD_TRIGGER_DOCKER_UPDATE_PRUNE=true
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
       - data:/store

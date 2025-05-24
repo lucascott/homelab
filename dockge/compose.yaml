@@ -1,0 +1,34 @@
+networks:
+  reverse-proxy:
+    external: true
+
+services:
+  dockge:
+    image: louislam/dockge:1
+    restart: unless-stopped
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+      - ./data:/app/data
+      # If you want to use private registries, you need to share the auth file with Dockge:
+      # - /root/.docker/:/root/.docker
+
+      # Stacks Directory
+      # ⚠️ READ IT CAREFULLY. If you did it wrong, your data could end up writing into a WRONG PATH.
+      # ⚠️ 1. FULL path only. No relative path (MUST)
+      # ⚠️ 2. Left Stacks Path === Right Stacks Path (MUST)
+      - /homelab/homelab:/homelab/homelab
+    environment:
+      # Tell Dockge where is your stacks directory
+      - DOCKGE_STACKS_DIR=/homelab/homelab
+    networks:
+      - reverse-proxy
+    labels:
+      - traefik.enable=true
+      - traefik.http.routers.${COMPOSE_PROJECT_NAME}.rule=Host(`${COMPOSE_PROJECT_NAME}.lucascott.com`)
+      - traefik.http.routers.${COMPOSE_PROJECT_NAME}.entrypoints=websecure
+      - traefik.http.routers.${COMPOSE_PROJECT_NAME}.tls=true
+      - traefik.http.routers.${COMPOSE_PROJECT_NAME}.tls.certresolver=letsencrypt-dns
+      - traefik.http.routers.${COMPOSE_PROJECT_NAME}.tls.domains[0].sans=*.lucascott.com
+      - traefik.http.routers.${COMPOSE_PROJECT_NAME}.middlewares=internalOnly@file
+      - traefik.http.services.${COMPOSE_PROJECT_NAME}.loadbalancer.server.port=5001
+      - wud.link.template=https://github.com/louislam/dockge/releases

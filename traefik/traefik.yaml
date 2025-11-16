@@ -56,3 +56,9 @@ certificatesResolvers:
 
 metrics:
   prometheus: {}
+
+experimental:
+  plugins:
+    denyip:
+      moduleName: "github.com/kvncrw/denyip"
+      version: "v1.1.0"

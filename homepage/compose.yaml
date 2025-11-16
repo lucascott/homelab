@@ -22,6 +22,6 @@ services:
       - traefik.http.routers.${COMPOSE_PROJECT_NAME}.tls=true
       - traefik.http.routers.${COMPOSE_PROJECT_NAME}.tls.certresolver=letsencrypt-dns
       - traefik.http.routers.${COMPOSE_PROJECT_NAME}.tls.domains[0].sans=*.lucascott.com
-      - traefik.http.routers.${COMPOSE_PROJECT_NAME}.middlewares=internalOnly@file
+      - traefik.http.routers.${COMPOSE_PROJECT_NAME}.middlewares=internalOnly@file,oidc-auth@file
       - traefik.http.services.${COMPOSE_PROJECT_NAME}.loadbalancer.server.port=3000
       - wud.link.template=https://github.com/gethomepage/homepage/releases

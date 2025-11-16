@@ -42,6 +42,7 @@ dns:
   trusted_proxies:
     - 127.0.0.0/8
     - ::1/128
+  cache_enabled: true
   cache_size: 4194304
   cache_ttl_min: 0
   cache_ttl_max: 0
@@ -68,6 +69,8 @@ dns:
   use_http3_upstreams: false
   serve_plain_dns: true
   hostsfile_enabled: true
+  pending_requests:
+    enabled: true
 tls:
   enabled: false
   server_name: ""
@@ -153,9 +156,17 @@ filtering:
   safebrowsing_block_host: standard-block.dns.adguard.com
   rewrites:
     - domain: lucascott.com
-      answer: 192.168.1.201
+      answer: 192.168.1.200
+      enabled: true
     - domain: '*.lucascott.com'
-      answer: 192.168.1.201
+      answer: 192.168.1.200
+      enabled: true
+    - domain: robverbeek.org
+      answer: 192.168.1.223
+      enabled: true
+    - domain: '*.robverbeek.org'
+      answer: 192.168.1.223
+      enabled: true
   safe_fs_patterns:
     - /opt/adguardhome/work/data/userfilters/*
   safebrowsing_cache_size: 1048576
@@ -165,6 +176,7 @@ filtering:
   filters_update_interval: 24
   blocked_response_ttl: 10
   filtering_enabled: true
+  rewrites_enabled: true
   parental_enabled: false
   safebrowsing_enabled: false
   protection_enabled: true
@@ -189,4 +201,4 @@ os:
   group: ""
   user: ""
   rlimit_nofile: 0
-schema_version: 29
+schema_version: 31

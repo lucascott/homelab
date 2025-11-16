@@ -1,13 +1,26 @@
+networks:
+  reverse-proxy:
+    external: true
+
 services:
   adguardhome:
     image: adguard/adguardhome:latest
     restart: unless-stopped
+    networks:
+      - reverse-proxy
     ports:
       - 53:53/tcp
       - 53:53/udp
-      - 8000:80
     volumes:
       - ./conf:/opt/adguardhome/conf
       - ./data:/opt/adguardhome/work
     labels:
+      - traefik.enable=true
+      - traefik.http.routers.${COMPOSE_PROJECT_NAME}.rule=Host(`dns.lucascott.com`)
+      - traefik.http.routers.${COMPOSE_PROJECT_NAME}.entrypoints=websecure
+      - traefik.http.routers.${COMPOSE_PROJECT_NAME}.tls=true
+      - traefik.http.routers.${COMPOSE_PROJECT_NAME}.tls.certresolver=letsencrypt-dns
+      - traefik.http.routers.${COMPOSE_PROJECT_NAME}.tls.domains[0].sans=*.lucascott.com
+      - traefik.http.routers.${COMPOSE_PROJECT_NAME}.middlewares=internalOnly@file,oidc-auth@file
+      - traefik.http.services.${COMPOSE_PROJECT_NAME}.loadbalancer.server.port=80
       - wud.link.template=https://github.com/AdguardTeam/AdGuardHome/releases

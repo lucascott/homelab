@@ -1,0 +1,38 @@
+networks:
+  reverse-proxy:
+    external: true
+
+services:
+  pocket-id:
+    image: ghcr.io/pocket-id/pocket-id:v1
+    restart: unless-stopped
+    environment:
+      # See the documentation for more information: https://pocket-id.org/docs/configuration/environment-variables
+      APP_URL: https://auth.lucascott.com
+      TRUST_PROXY: true
+      # MAXMIND_LICENSE_KEY:
+      PUID: 1000
+      PGID: 1001
+    volumes:
+      - ./data:/app/data
+    networks:
+      - reverse-proxy
+    labels:
+      - traefik.enable=true
+      - traefik.http.routers.${COMPOSE_PROJECT_NAME}.rule=Host(`auth.lucascott.com`)
+      - traefik.http.routers.${COMPOSE_PROJECT_NAME}.entrypoints=websecure
+      - traefik.http.routers.${COMPOSE_PROJECT_NAME}.tls=true
+      - traefik.http.routers.${COMPOSE_PROJECT_NAME}.tls.certresolver=letsencrypt-dns
+      - traefik.http.routers.${COMPOSE_PROJECT_NAME}.tls.domains[0].sans=*.lucascott.com
+      - traefik.http.services.${COMPOSE_PROJECT_NAME}.loadbalancer.server.port=1411
+      - wud.tag.include=^v\d+$
+      - wud.link.template=https://github.com/pocket-id/pocket-id/releases
+    healthcheck:
+      test:
+        - CMD
+        - /app/pocket-id
+        - healthcheck
+      interval: 1m30s
+      timeout: 5s
+      retries: 2
+      start_period: 10s

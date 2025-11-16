@@ -1,9 +1,10 @@
 networks:
-  prometheus: { external: true }
+  prometheus:
+    external: true
 
 services:
   prometheus:
-    image: prom/prometheus:v3.4.0
+    image: prom/prometheus:v3.7.3
     restart: unless-stopped
     user: 1000:1001
     volumes:
@@ -32,7 +33,7 @@ services:
     devices:
       - /dev/kmsg:/dev/kmsg
     command:
-      - '--store_container_labels=false'
-      - '--enable_metrics=cpu,memory,network'
-      - '--docker_only=true'
-      - '--allow_dynamic_housekeeping=true'
+      - --store_container_labels=false
+      - --enable_metrics=cpu,memory,network
+      - --docker_only=true
+      - --allow_dynamic_housekeeping=true

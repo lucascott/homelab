@@ -1,6 +1,8 @@
 secrets:
   TELEGRAM_BOT_TOKEN:
     file: TELEGRAM_BOT_TOKEN.secret
+  OIDC_CLIENT_SECRET:
+    file: OIDC_CLIENT_SECRET.secret
 
 networks:
   reverse-proxy:
@@ -15,12 +17,20 @@ services:
     restart: unless-stopped
     secrets:
       - TELEGRAM_BOT_TOKEN
+      - OIDC_CLIENT_SECRET
     environment:
-      # double underscore is unconventional yet intentional (https://getwud.github.io/wud/#/configuration/?id=secret-management)
-      - WUD_TRIGGER_TELEGRAM_PERSONAL_BOTTOKEN__FILE=/run/secrets/TELEGRAM_BOT_TOKEN
-      - WUD_TRIGGER_TELEGRAM_PERSONAL_CHATID=30646137
-      - WUD_TRIGGER_DOCKER_UPDATE_AUTO=false
-      - WUD_TRIGGER_DOCKER_UPDATE_PRUNE=true
+      WUD_PUBLIC_URL: https://${COMPOSE_PROJECT_NAME}.lucascott.com
+      WUD_AUTH_BASIC_ADMIN_USER: luca
+      WUD_AUTH_BASIC_ADMIN_HASH: $$apr1$$r3sUg1B2$$iuX2.QyZooNQ4Pw8RxLRM0
+      WUD_AUTH_OIDC_AUTH_CLIENTID: fd546872-74bc-4f43-9efe-18748d9aafcd
+      # double underscore is unconventional yet correct for WUD (https://getwud.github.io/wud/#/configuration/?id=secret-management)
+      WUD_AUTH_OIDC_AUTH_CLIENTSECRET__FILE: /run/secrets/OIDC_CLIENT_SECRET
+      WUD_AUTH_OIDC_AUTH_DISCOVERY: https://auth.lucascott.com/.well-known/openid-configuration
+      WUD_AUTH_OIDC_AUTH_REDIRECT: false # ensure this is false to avoid breaking basic auth
+      WUD_TRIGGER_TELEGRAM_PERSONAL_BOTTOKEN__FILE: /run/secrets/TELEGRAM_BOT_TOKEN
+      WUD_TRIGGER_TELEGRAM_PERSONAL_CHATID: 30646137
+      WUD_TRIGGER_DOCKER_UPDATE_AUTO: false
+      WUD_TRIGGER_DOCKER_UPDATE_PRUNE: true
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
       - data:/store

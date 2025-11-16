@@ -1,0 +1,25 @@
+networks:
+  reverse-proxy:
+    external: true
+
+services:
+  picard:
+    image: mikenye/picard:latest
+    restart: no
+    environment:
+      USER_ID: 1000
+      GROUP_ID: 1001
+    volumes:
+      - /mnt/ssd/music:/music
+      - /mnt/ssd/music-secondary:/music-secondary
+    networks:
+      - reverse-proxy
+    labels:
+      - traefik.enable=true
+      - traefik.http.routers.${COMPOSE_PROJECT_NAME}.rule=Host(`${COMPOSE_PROJECT_NAME}.lucascott.com`)
+      - traefik.http.routers.${COMPOSE_PROJECT_NAME}.entrypoints=websecure
+      - traefik.http.routers.${COMPOSE_PROJECT_NAME}.tls=true
+      - traefik.http.routers.${COMPOSE_PROJECT_NAME}.tls.certresolver=letsencrypt-dns
+      - traefik.http.routers.${COMPOSE_PROJECT_NAME}.tls.domains[0].sans=*.lucascott.com
+      - traefik.http.routers.${COMPOSE_PROJECT_NAME}.middlewares=internalOnly@file,oidc-auth@file
+      - traefik.http.services.${COMPOSE_PROJECT_NAME}.loadbalancer.server.port=5800

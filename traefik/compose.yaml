@@ -1,6 +1,8 @@
 networks:
-  reverse-proxy: { external: true }
-  prometheus: { external: true }
+  reverse-proxy:
+    external: true
+  prometheus:
+    external: true
 
 secrets:
   CLOUDFLARE_DNS_API_TOKEN:
@@ -15,14 +17,13 @@ services:
     environment:
       CLOUDFLARE_DNS_API_TOKEN_FILE: /run/secrets/CLOUDFLARE_DNS_API_TOKEN
     ports:
-      - 80:80
       - 443:443
       - 8080:8080
     volumes:
-      - "/var/run/docker.sock:/var/run/docker.sock:ro"
-      - "./traefik.yaml:/etc/traefik/traefik.yaml:ro"
-      - "./traefik_dynamic.yaml:/etc/traefik/traefik_dynamic.yaml:ro"
-      - "./certs:/etc/certs"
+      - /var/run/docker.sock:/var/run/docker.sock:ro
+      - ./traefik.yaml:/etc/traefik/traefik.yaml:ro
+      - ./traefik_dynamic.yaml:/etc/traefik/traefik_dynamic.yaml:ro
+      - ./certs:/etc/certs
     networks:
       - reverse-proxy
       - prometheus

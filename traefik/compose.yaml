@@ -16,6 +16,13 @@ services:
       - CLOUDFLARE_DNS_API_TOKEN
     environment:
       CLOUDFLARE_DNS_API_TOKEN_FILE: /run/secrets/CLOUDFLARE_DNS_API_TOKEN
+    env_file:
+      # the traefik_dynamic.yaml config's templating functionality doesn't have support for reading secrets from files
+      # https://doc.traefik.io/traefik/reference/routing-configuration/other-providers/file/#go-templating
+      # furthermore, the plugin oauth plugin configuration doesn't support it either
+      # so we set the necessary secrets as environment variables via env files
+      - OIDC_CLIENT_SECRET_TOKEN.secret
+      - OIDC_ENCRYPTION_SECRET.secret
     ports:
       - 443:443
       - 8080:8080

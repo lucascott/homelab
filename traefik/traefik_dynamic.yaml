@@ -11,3 +11,14 @@ http:
         denyip:
           ipDenyList:
             - "192.168.1.223" # MFN Reverse proxy
+
+    oidc-auth:
+      plugin:
+        traefik-oidc-auth:
+          # https://traefik-oidc-auth.sevensolutions.cc/docs/getting-started/middleware-configuration
+          Secret: '{{env "OIDC_ENCRYPTION_SECRET"}}'
+          Provider:
+            Url: "https://auth.lucascott.com"
+            ClientId: "71dccb04-15da-4562-bacd-c844c1d2a6bb"
+            ClientSecret: '{{env "OIDC_CLIENT_SECRET_TOKEN"}}'
+          Scopes: ["openid"]

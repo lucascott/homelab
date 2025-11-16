@@ -63,3 +63,6 @@ experimental:
     denyip:
       moduleName: "github.com/kvncrw/denyip"
       version: "v1.1.0"
+    traefik-oidc-auth:
+      moduleName: "github.com/sevensolutions/traefik-oidc-auth"
+      version: "v0.16.0"

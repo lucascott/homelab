@@ -23,7 +23,6 @@ services:
       SPOTIFY_PUBLIC: a824ddd1243546459415bc2eaba3db6c
       TIMEZONE: Europe/Helsinki
     labels:
-
       - traefik.enable=true
       - traefik.http.routers.${COMPOSE_PROJECT_NAME}-api.rule=Host(`${COMPOSE_PROJECT_NAME}.lucascott.com`)
         && PathPrefix(`/api`)
@@ -34,6 +33,7 @@ services:
       - traefik.http.middlewares.${COMPOSE_PROJECT_NAME}-api-strip.stripprefix.prefixes=/api
       - traefik.http.routers.${COMPOSE_PROJECT_NAME}-api.middlewares=yourspotify-api-strip@docker
       - traefik.http.services.${COMPOSE_PROJECT_NAME}-api.loadbalancer.server.port=8080
+      - wud.link.template=https://github.com/Yooooomi/your_spotify/releases
   mongo:
     image: mongo:6
     restart: unless-stopped

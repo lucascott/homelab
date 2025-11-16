@@ -4,10 +4,13 @@ networks:
 
 services:
   silverbullet:
-    image: zefhemel/silverbullet:latest
+    image: ghcr.io/silverbulletmd/silverbullet:latest
     restart: unless-stopped
-    env_file:
-      - ./SB_USER.secret
+    environment:
+      SB_INDEX_PAGE: Homepage
+      SB_HTTP_LOGGING: true
+      # effectively disable Silverbullet auth as we rely on OIDC Traefik plugin
+      SB_USER:
     volumes:
       - ./space:/space
     networks:
@@ -19,5 +22,6 @@ services:
       - traefik.http.routers.${COMPOSE_PROJECT_NAME}.tls=true
       - traefik.http.routers.${COMPOSE_PROJECT_NAME}.tls.certresolver=letsencrypt-dns
       - traefik.http.routers.${COMPOSE_PROJECT_NAME}.tls.domains[0].sans=*.lucascott.com
-      - traefik.http.routers.${COMPOSE_PROJECT_NAME}.middlewares=internalOnly@file
+      - traefik.http.routers.${COMPOSE_PROJECT_NAME}.middlewares=internalOnly@file,oidc-auth@file
+      - traefik.http.services.${COMPOSE_PROJECT_NAME}.loadbalancer.server.port=3000
       - wud.link.template=https://github.com/silverbulletmd/silverbullet/releases

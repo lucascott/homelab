@@ -1,0 +1,15 @@
+services:
+  telewaves:
+    image: ghcr.io/lucascott/telewaves:main
+    # Set it to a user that has RW permissions to the host data and library directories mounted as volumes
+    user: 1000:1001
+    restart: unless-stopped
+    volumes:
+      - ./data:/data
+      - /mnt/ssd/music-secondary:/library
+    environment:
+      # Telegram App configuration from https://my.telegram.org/apps
+      TELEGRAM_API_ID: 1315661
+      TELEGRAM_API_HASH: bc17e55f27e7a0beb6f8b575a70e1175
+      CHAT_FILTER: 1437229810
+      EXTENSIONS_FILTER: flac

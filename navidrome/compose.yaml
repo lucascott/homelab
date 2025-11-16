@@ -1,0 +1,31 @@
+networks:
+  reverse-proxy:
+    external: true
+  prometheus:
+    external: true
+
+services:
+  navidrome:
+    image: deluan/navidrome:latest
+    user: 1000:1001
+    restart: unless-stopped
+    environment:
+      ND_ENABLEGRAVATAR: true
+      ND_PROMETHEUS_ENABLED: true
+    volumes:
+      - ./data:/data
+      - /mnt/ssd/music:/music:ro
+      - /mnt/ssd/music-secondary:/music-secondary:ro
+    networks:
+      - reverse-proxy
+      - prometheus
+    labels:
+      - traefik.enable=true
+      # do no expose Prometheus metrics endpoint publicly
+      - traefik.http.routers.${COMPOSE_PROJECT_NAME}.rule=Host(`music.lucascott.com`) && !PathPrefix(`/metrics`)
+      - traefik.http.routers.${COMPOSE_PROJECT_NAME}.entrypoints=websecure
+      - traefik.http.routers.${COMPOSE_PROJECT_NAME}.tls=true
+      - traefik.http.routers.${COMPOSE_PROJECT_NAME}.tls.certresolver=letsencrypt-dns
+      - traefik.http.routers.${COMPOSE_PROJECT_NAME}.tls.domains[0].sans=*.lucascott.com
+      - traefik.http.services.${COMPOSE_PROJECT_NAME}.loadbalancer.server.port=4533
+      - wud.link.template=https://github.com/navidrome/navidrome/releases

@@ -27,6 +27,7 @@ providers:
 
 api:
   dashboard: true
+  disabledashboardad: true
   insecure: true
 
 log:

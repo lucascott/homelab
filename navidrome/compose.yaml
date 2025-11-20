@@ -12,6 +12,8 @@ services:
     environment:
       ND_ENABLEGRAVATAR: true
       ND_PROMETHEUS_ENABLED: true
+      ND_DEFAULTTHEME: Spotify-ish
+      ND_ENABLESTARRATING: false
     volumes:
       - ./data:/data
       - /mnt/ssd/music:/music:ro

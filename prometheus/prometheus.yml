@@ -22,3 +22,7 @@ scrape_configs:
   - job_name: navidrome
     static_configs:
       - targets: ['navidrome:4533']
+
+  - job_name: waves
+    static_configs:
+      - targets: ['waves-server:8080']

@@ -14,6 +14,8 @@ services:
       ND_PROMETHEUS_ENABLED: true
       ND_DEFAULTTHEME: Spotify-ish
       ND_ENABLESTARRATING: false
+      ND_UILOGINBACKGROUNDURL: https://images.unsplash.com/photo-1548118056-2f233f26f37a
+      ND_UIWELCOMEMESSAGE: Alea iacta est
     volumes:
       - ./data:/data
       - /mnt/ssd/music:/music:ro

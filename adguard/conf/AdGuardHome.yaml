@@ -116,7 +116,11 @@ filters:
     name: Dan Pollock's List
     id: 1684786664
 whitelist_filters: []
-user_rules: []
+user_rules:
+  - '! https://burakberk.dev/split-horizon-dns-on-adguard-one-domain-two-networks-two-ip-addresses/'
+  - '||lucascott.com^$dnsrewrite=NOERROR;A;100.64.0.1,client=100.0.0.0/8'
+  - '||lucascott.com^$dnsrewrite=NOERROR;A;192.168.1.200,client=192.168.1.0/24'
+  - '||robverbeek.org^$dnsrewrite=NOERROR;A;192.168.1.223,client=192.168.1.0/24'
 dhcp:
   enabled: false
   interface_name: ""
@@ -154,19 +158,7 @@ filtering:
   blocking_mode: default
   parental_block_host: family-block.dns.adguard.com
   safebrowsing_block_host: standard-block.dns.adguard.com
-  rewrites:
-    - domain: lucascott.com
-      answer: 192.168.1.200
-      enabled: true
-    - domain: '*.lucascott.com'
-      answer: 192.168.1.200
-      enabled: true
-    - domain: robverbeek.org
-      answer: 192.168.1.223
-      enabled: true
-    - domain: '*.robverbeek.org'
-      answer: 192.168.1.223
-      enabled: true
+  rewrites: []
   safe_fs_patterns:
     - /opt/adguardhome/work/data/userfilters/*
   safebrowsing_cache_size: 1048576

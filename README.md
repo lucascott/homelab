@@ -66,11 +66,12 @@ This allows secure access to all public and internal only services without needi
 | [**Dockge**](https://github.com/louislam/dockge)              | Docker Compose stack manager        | [`dockge/`](./dockge/)         |
 | [**Portainer**](https://github.com/portainer/portainer)       | Docker container management UI      | [`portainer/`](./portainer/)   |
 
-### Security & Privacy
+### Identity, Security & Privacy
 
 | Service                                                       | Description                            | Directory                        |
 |---------------------------------------------------------------|----------------------------------------|----------------------------------|
 | [**Vaultwarden**](https://github.com/dani-garcia/vaultwarden) | Self-hosted Bitwarden password manager | [`vaultwarden/`](./vaultwarden/) |
+| [**Pocket ID**](https://github.com/pocket-id/pocket-id)       | OpenID Connect identity provider       | [`pocket-id/`](./pocket-id/)     |
 
 ### Media & Personal Services
 
@@ -79,6 +80,9 @@ This allows secure access to all public and internal only services without needi
 | [**Homepage**](https://gethomepage.dev/)                    | Homepage dashboard for services    | [`homepage/`](./homepage/)         |
 | [**Immich**](https://immich.app/)                           | Self-hosted photo and video backup | [`immich/`](./immich/)             |
 | [**SilverBullet**](https://silverbullet.md/)                | Personal knowledge management      | [`silverbullet/`](./silverbullet/) |
+| [**Navidrome**](https://github.com/navidrome/navidrome)     | Self-hosted music streaming server | [`navidrome/`](./navidrome/)       |
+| [**Picard**](https://picard.musicbrainz.org/)               | Music tagging and organization tool | [`picard/`](./picard/)             |
+| [**Telewaves**](https://github.com/lucascott/telewaves)     | Telegram bot for music downloads   | [`telewaves/`](./telewaves/)       |
 
 ### Smart Home & IoT
 
@@ -136,7 +140,6 @@ When adding new services:
 - Include missing services in this repository:
   - Uptime Kuma configuration for service uptime monitoring
   - Backup scripts/configuration and documentation
-- Explore hosting an SSO identity provider (e.g., Keycloak) and integrate it with services for unified authentication
 
 ## My current hardware specifications
 

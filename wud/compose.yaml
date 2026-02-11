@@ -5,6 +5,8 @@ secrets:
     file: OIDC_CLIENT_SECRET.secret
   DOCKER_HUB_TOKEN:
     file: DOCKER_HUB_TOKEN.secret
+  GHCR_TOKEN:
+    file: GHCR_TOKEN.secret
 
 networks:
   reverse-proxy:
@@ -21,6 +23,7 @@ services:
       - TELEGRAM_BOT_TOKEN
       - OIDC_CLIENT_SECRET
       - DOCKER_HUB_TOKEN
+      - GHCR_TOKEN
     environment:
       WUD_PUBLIC_URL: https://${COMPOSE_PROJECT_NAME}.lucascott.com
       WUD_AUTH_BASIC_ADMIN_USER: luca
@@ -32,6 +35,8 @@ services:
       WUD_AUTH_OIDC_AUTH_REDIRECT: false # ensure this is false to avoid breaking basic auth
       WUD_REGISTRY_HUB_PUBLIC_LOGIN: lucascott
       WUD_REGISTRY_HUB_PUBLIC_PASSWORD__FILE: /run/secrets/DOCKER_HUB_TOKEN
+      WUD_REGISTRY_GHCR_PUBLIC_USERNAME: lucascott
+      WUD_REGISTRY_GHCR_PUBLIC_TOKEN__FILE: /run/secrets/GHCR_TOKEN
       WUD_TRIGGER_TELEGRAM_PERSONAL_BOTTOKEN__FILE: /run/secrets/TELEGRAM_BOT_TOKEN
       WUD_TRIGGER_TELEGRAM_PERSONAL_CHATID: 30646137
       WUD_TRIGGER_DOCKER_UPDATE_AUTO: false

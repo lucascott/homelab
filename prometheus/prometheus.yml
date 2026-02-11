@@ -26,3 +26,7 @@ scrape_configs:
   - job_name: waves
     static_configs:
       - targets: ['waves-server:8080']
+
+  - job_name: pocket-id
+    static_configs:
+      - targets: ['pocket-id:9464']

@@ -1,6 +1,8 @@
 networks:
   reverse-proxy:
     external: true
+  prometheus:
+    external: true
 
 services:
   pocket-id:
@@ -13,10 +15,14 @@ services:
       # MAXMIND_LICENSE_KEY:
       PUID: 1000
       PGID: 1001
+      METRICS_ENABLED: true
+      OTEL_METRICS_EXPORTER: prometheus
+      OTEL_EXPORTER_PROMETHEUS_HOST: 0.0.0.0
     volumes:
       - ./data:/app/data
     networks:
       - reverse-proxy
+      - prometheus
     labels:
       - traefik.enable=true
       - traefik.http.routers.${COMPOSE_PROJECT_NAME}.rule=Host(`auth.lucascott.com`)
@@ -25,7 +31,8 @@ services:
       - traefik.http.routers.${COMPOSE_PROJECT_NAME}.tls.certresolver=letsencrypt-dns
       - traefik.http.routers.${COMPOSE_PROJECT_NAME}.tls.domains[0].sans=*.lucascott.com
       - traefik.http.services.${COMPOSE_PROJECT_NAME}.loadbalancer.server.port=1411
-      - wud.tag.include=^v\d+$
+      - wud.watch.digest=true
+      - wud.tag.exclude=^.*$
       - wud.link.template=https://github.com/pocket-id/pocket-id/releases
     healthcheck:
       test:

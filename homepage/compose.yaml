@@ -6,12 +6,13 @@ services:
   homepage:
     image: ghcr.io/gethomepage/homepage:latest
     restart: unless-stopped
-    user: 1000:1001
     networks:
       - reverse-proxy
     environment:
       HOMEPAGE_ALLOWED_HOSTS: home.lucascott.com
       LOG_TARGETS: stdout
+      PUID: 1000
+      PGID: 1001
     volumes:
       - ./config:/app/config
       - /mnt/ssd/.empty:/mnt/ssd:ro

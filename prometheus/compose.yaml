@@ -21,7 +21,7 @@ services:
       - wud.link.template=https://github.com/prometheus/prometheus/releases
 
   cadvisor:
-    image: gcr.io/cadvisor/cadvisor:v0.52.1
+    image: ghcr.io/google/cadvisor:latest
     restart: unless-stopped
     volumes:
       - /:/rootfs:ro

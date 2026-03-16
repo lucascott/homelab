@@ -4,11 +4,18 @@ networks:
   prometheus:
     external: true
 
+secrets:
+  ENCRYPTION_KEY:
+    file: ENCRYPTION_KEY.secret
+
 services:
   pocket-id:
-    image: ghcr.io/pocket-id/pocket-id:v1
+    image: ghcr.io/pocket-id/pocket-id:v2
     restart: unless-stopped
+    secrets:
+      - ENCRYPTION_KEY
     environment:
+      ENCRYPTION_KEY_FILE: /run/secrets/ENCRYPTION_KEY
       # See the documentation for more information: https://pocket-id.org/docs/configuration/environment-variables
       APP_URL: https://auth.lucascott.com
       TRUST_PROXY: true

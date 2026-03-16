@@ -43,11 +43,11 @@ This allows secure access to all public and internal only services without needi
 ## Services
 
 ### Public Services
-| Service                                                     | Description                  | Directory                                                                    |
-|-------------------------------------------------------------|------------------------------|------------------------------------------------------------------------------|
-| [**www.lucascott.com**](https://www.lucascott.com)          | My personal website          | [lucascott.github.io repo](https://github.com/lucascott/lucascott.github.io) |
-| [**mixes.lucascott.com**](https://mixes.lucascott.com)      | My DJ mixes archive          | Coming soon!                                                                 |
-| [**YourSpotify**](https://github.com/Yooooomi/your_spotify) | Spotify listening statistics | [`yourspotify/`](./yourspotify/)                                             |
+
+| Service                                                | Description         | Directory                    |
+|--------------------------------------------------------|---------------------|------------------------------|
+| [**www.lucascott.com**](https://www.lucascott.com)     | My personal website | [`lucascott/`](./lucascott/) |
+| [**mixes.lucascott.com**](https://mixes.lucascott.com) | My DJ mixes archive | [`waves/`](./waves/)         |
 
 ### Infrastructure & Core Services
 
@@ -75,14 +75,16 @@ This allows secure access to all public and internal only services without needi
 
 ### Media & Personal Services
 
-| Service                                                     | Description                        | Directory                          |
-|-------------------------------------------------------------|------------------------------------|------------------------------------|
-| [**Homepage**](https://gethomepage.dev/)                    | Homepage dashboard for services    | [`homepage/`](./homepage/)         |
-| [**Immich**](https://immich.app/)                           | Self-hosted photo and video backup | [`immich/`](./immich/)             |
-| [**SilverBullet**](https://silverbullet.md/)                | Personal knowledge management      | [`silverbullet/`](./silverbullet/) |
-| [**Navidrome**](https://github.com/navidrome/navidrome)     | Self-hosted music streaming server | [`navidrome/`](./navidrome/)       |
+| Service                                                     | Description                         | Directory                          |
+|-------------------------------------------------------------|-------------------------------------|------------------------------------|
+| [**Homepage**](https://gethomepage.dev/)                    | Homepage dashboard for services     | [`homepage/`](./homepage/)         |
+| [**Immich**](https://immich.app/)                           | Self-hosted photo and video backup  | [`immich/`](./immich/)             |
+| [**SilverBullet**](https://silverbullet.md/)                | Personal knowledge management       | [`silverbullet/`](./silverbullet/) |
+| [**Navidrome**](https://github.com/navidrome/navidrome)     | Self-hosted music streaming server  | [`navidrome/`](./navidrome/)       |
 | [**Picard**](https://picard.musicbrainz.org/)               | Music tagging and organization tool | [`picard/`](./picard/)             |
-| [**Telewaves**](https://github.com/lucascott/telewaves)     | Telegram bot for music downloads   | [`telewaves/`](./telewaves/)       |
+| [**Telewaves**](https://github.com/lucascott/telewaves)     | Telegram bot for music downloads    | [`telewaves/`](./telewaves/)       |
+| [**YourSpotify**](https://github.com/Yooooomi/your_spotify) | Spotify listening statistics        | [`yourspotify/`](./yourspotify/)   |
+
 
 ### Smart Home & IoT
 

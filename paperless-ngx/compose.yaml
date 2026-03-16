@@ -1,0 +1,41 @@
+networks:
+  reverse-proxy:
+    external: true
+
+secrets:
+  PAPERLESS_SECRET_KEY:
+    file: PAPERLESS_SECRET_KEY.secret
+
+services:
+  cache:
+    image: valkey/valkey:8-alpine
+    restart: unless-stopped
+
+  webserver:
+    image: ghcr.io/paperless-ngx/paperless-ngx:latest
+    restart: unless-stopped
+    depends_on:
+      - cache
+    networks:
+      - default
+      - reverse-proxy
+    volumes:
+      - ./data/data:/usr/src/paperless/data
+      - ./data/media:/usr/src/paperless/media
+      - ./data/export:/usr/src/paperless/export
+      - ./data/consume:/usr/src/paperless/consume
+    env_file:
+      - paperless-ngx.env
+    secrets:
+      - PAPERLESS_SECRET_KEY
+    labels:
+      - traefik.enable=true
+      - traefik.http.routers.${COMPOSE_PROJECT_NAME}.rule=Host(`${COMPOSE_PROJECT_NAME}.lucascott.com`)
+      - traefik.http.routers.${COMPOSE_PROJECT_NAME}.entrypoints=websecure
+      - traefik.http.routers.${COMPOSE_PROJECT_NAME}.tls=true
+      - traefik.http.routers.${COMPOSE_PROJECT_NAME}.tls.certresolver=letsencrypt-dns
+      - traefik.http.routers.${COMPOSE_PROJECT_NAME}.tls.domains[0].sans=*.lucascott.com
+      - traefik.http.routers.${COMPOSE_PROJECT_NAME}.middlewares=internalOnly@file,oidc-auth@file
+      - traefik.http.services.${COMPOSE_PROJECT_NAME}.loadbalancer.server.port=8000
+      - wud.link.template=https://github.com/paperless-ngx/paperless-ngx/releases
+

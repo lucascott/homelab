@@ -4,7 +4,7 @@ networks:
 
 services:
   prometheus:
-    image: prom/prometheus:v3.9.1
+    image: prom/prometheus:v3.10.0
     restart: unless-stopped
     user: 1000:1001
     volumes:
@@ -36,4 +36,6 @@ services:
       - --store_container_labels=false
       - --enable_metrics=cpu,memory,network
       - --docker_only=true
-      - --allow_dynamic_housekeeping=true
+#      - --allow_dynamic_housekeeping=true
+      # same as prometheus metrics collection frequency
+      - --housekeeping_interval=15s

@@ -10,6 +10,9 @@ services:
   cache:
     image: valkey/valkey:8-alpine
     restart: unless-stopped
+    labels:
+      - wud.watch.digest=true
+      - wud.tag.exclude=^.*$
 
   webserver:
     image: ghcr.io/paperless-ngx/paperless-ngx:latest

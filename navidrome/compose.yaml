@@ -32,4 +32,5 @@ services:
       - traefik.http.routers.${COMPOSE_PROJECT_NAME}.tls.certresolver=letsencrypt-dns
       - traefik.http.routers.${COMPOSE_PROJECT_NAME}.tls.domains[0].sans=*.lucascott.com
       - traefik.http.services.${COMPOSE_PROJECT_NAME}.loadbalancer.server.port=4533
+      - wud.watch.digest=true
       - wud.link.template=https://github.com/navidrome/navidrome/releases

@@ -25,4 +25,5 @@ services:
       - traefik.http.routers.${COMPOSE_PROJECT_NAME}.tls.domains[0].sans=*.lucascott.com
       - traefik.http.routers.${COMPOSE_PROJECT_NAME}.middlewares=internalOnly@file
       - traefik.http.services.${COMPOSE_PROJECT_NAME}.loadbalancer.server.port=9000
+      - wud.watch.digest=true
       - wud.link.template=https://github.com/portainer/portainer/releases

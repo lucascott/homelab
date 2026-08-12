@@ -31,7 +31,9 @@ services:
       - traefik.http.routers.${COMPOSE_PROJECT_NAME}.tls.certresolver=letsencrypt-dns
       - traefik.http.routers.${COMPOSE_PROJECT_NAME}.tls.domains[0].sans=*.lucascott.com
       - traefik.http.routers.${COMPOSE_PROJECT_NAME}.middlewares=internalOnly@file
+      - wud.watch.digest=true
       - wud.link.template=https://github.com/dani-garcia/vaultwarden/releases
+
 secrets:
   admin-token:
     file: ./admin-token.secret

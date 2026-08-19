@@ -33,7 +33,9 @@ services:
       - traefik.http.middlewares.${COMPOSE_PROJECT_NAME}-api-strip.stripprefix.prefixes=/api
       - traefik.http.routers.${COMPOSE_PROJECT_NAME}-api.middlewares=internalOnly@file,yourspotify-api-strip@docker
       - traefik.http.services.${COMPOSE_PROJECT_NAME}-api.loadbalancer.server.port=8080
+      - wud.watch.digest=true
       - wud.link.template=https://github.com/Yooooomi/your_spotify/releases
+
   mongo:
     image: mongo:6
     restart: unless-stopped
@@ -61,3 +63,4 @@ services:
       - traefik.http.routers.${COMPOSE_PROJECT_NAME}.tls.domains[0].sans=*.lucascott.com
       - traefik.http.routers.${COMPOSE_PROJECT_NAME}.middlewares=internalOnly@file
       - traefik.http.services.${COMPOSE_PROJECT_NAME}.loadbalancer.server.port=3000
+      - wud.watch.digest=true

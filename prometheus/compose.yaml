@@ -36,6 +36,5 @@ services:
       - --store_container_labels=false
       - --enable_metrics=cpu,memory,network
       - --docker_only=true
-#      - --allow_dynamic_housekeeping=true
       # same as prometheus metrics collection frequency
       - --housekeeping_interval=15s

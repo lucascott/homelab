@@ -1,0 +1,41 @@
+networks:
+  reverse-proxy:
+    external: true
+
+services:
+  uptime-kuma:
+    image: louislam/uptime-kuma:2-slim-rootless
+    restart: unless-stopped
+    volumes:
+      - ./data:/app/data
+    environment:
+      - TZ=UTC # Set the timezone (change to your preferred local timezone so monitoring times are the same)
+      - UMASK=0022 # Set your file permissions manually
+    networks:
+      - reverse-proxy
+    healthcheck:
+      test:
+        - CMD
+        - curl
+        - -f
+        - http://localhost:3001
+      interval: 30s
+      retries: 3
+      start_period: 10s
+      timeout: 5s
+    logging:
+      driver: json-file
+      options:
+        max-size: 10m
+        max-file: "3"
+    labels:
+      - traefik.enable=true
+      - traefik.http.routers.${COMPOSE_PROJECT_NAME}.rule=Host(`${COMPOSE_PROJECT_NAME}.lucascott.com`)
+      - traefik.http.routers.${COMPOSE_PROJECT_NAME}.entrypoints=websecure
+      - traefik.http.routers.${COMPOSE_PROJECT_NAME}.tls=true
+      - traefik.http.routers.${COMPOSE_PROJECT_NAME}.tls.certresolver=letsencrypt-dns
+      - traefik.http.routers.${COMPOSE_PROJECT_NAME}.tls.domains[0].sans=*.lucascott.com
+      - traefik.http.routers.${COMPOSE_PROJECT_NAME}.middlewares=internalOnly@file,oidc-auth@file
+      - traefik.http.services.${COMPOSE_PROJECT_NAME}.loadbalancer.server.port=3001
+      - wud.watch.digest=true
+      - wud.link.template=https://github.com/louislam/uptime-kuma/releases

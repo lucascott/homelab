@@ -4,7 +4,7 @@ networks:
 
 services:
   prometheus:
-    image: prom/prometheus:v3.10.0
+    image: prom/prometheus:v3.14.0
     restart: unless-stopped
     user: 1000:1001
     volumes:

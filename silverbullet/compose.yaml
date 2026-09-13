@@ -10,7 +10,7 @@ services:
       SB_INDEX_PAGE: Homepage
       SB_HTTP_LOGGING: true
       # effectively disable Silverbullet auth as we rely on OIDC Traefik plugin
-      SB_USER:
+      SB_USER: null
     volumes:
       - ./space:/space
     networks:

@@ -34,13 +34,31 @@ services:
       WUD_REGISTRY_HUB_PUBLIC_PASSWORD__FILE: /run/secrets/DOCKER_HUB_TOKEN
       WUD_REGISTRY_GHCR_PUBLIC_USERNAME: lucascott
       WUD_REGISTRY_GHCR_PUBLIC_TOKEN__FILE: /run/secrets/GHCR_TOKEN
-      WUD_TRIGGER_TELEGRAM_PERSONAL_BOTTOKEN__FILE: /run/secrets/TELEGRAM_BOT_TOKEN
-      WUD_TRIGGER_TELEGRAM_PERSONAL_CHATID: 30646137
+      # trigger for update notifications
+      WUD_TRIGGER_TELEGRAM_NOTIFY_BOTTOKEN__FILE: /run/secrets/TELEGRAM_BOT_TOKEN
+      WUD_TRIGGER_TELEGRAM_NOTIFY_CHATID: 30646137
+      WUD_TRIGGER_TELEGRAM_NOTIFY_DISABLETITLE: true
+      WUD_TRIGGER_TELEGRAM_NOTIFY_MESSAGEFORMAT: HTML
+      WUD_TRIGGER_TELEGRAM_NOTIFY_SIMPLEBODY__FILE: /tmp/notify_simplebody.html
+      # trigger for autoupdate reports
+      WUD_TRIGGER_TELEGRAM_REPORT_BOTTOKEN__FILE: /run/secrets/TELEGRAM_BOT_TOKEN
+      WUD_TRIGGER_TELEGRAM_REPORT_INCLUDEBYDEFAULT: false
+      WUD_TRIGGER_TELEGRAM_REPORT_CHATID: 30646137
+      WUD_TRIGGER_TELEGRAM_REPORT_DISABLETITLE: true
+      WUD_TRIGGER_TELEGRAM_REPORT_MESSAGEFORMAT: HTML
+      WUD_TRIGGER_TELEGRAM_REPORT_SIMPLEBODY__FILE: /tmp/report_simplebody.html
+      # manual trigger for updating containers
       WUD_TRIGGER_DOCKER_UPDATE_AUTO: false
       WUD_TRIGGER_DOCKER_UPDATE_PRUNE: true
+      # autoupdate trigger for updating selected containers
+      WUD_TRIGGER_DOCKER_AUTOUPDATE_INCLUDEBYDEFAULT: false
+      WUD_TRIGGER_DOCKER_AUTOUPDATE_AUTO: true
+      WUD_TRIGGER_DOCKER_AUTOUPDATE_PRUNE: true
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
       - data:/store
+      - ./notify_simplebody.html:/tmp/notify_simplebody.html:ro
+      - ./report_simplebody.html:/tmp/report_simplebody.html:ro
     networks:
       - reverse-proxy
     labels:
@@ -54,3 +72,4 @@ services:
       - traefik.http.services.${COMPOSE_PROJECT_NAME}.loadbalancer.server.port=3000
       - wud.watch.digest=true
       - wud.link.template=https://github.com/getwud/wud/releases
+      - wud.trigger.include=telegram.report,docker.autoupdate

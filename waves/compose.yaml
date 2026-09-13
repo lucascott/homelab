@@ -20,9 +20,14 @@ services:
       - traefik.http.routers.${COMPOSE_PROJECT_NAME}.tls=true
       - traefik.http.routers.${COMPOSE_PROJECT_NAME}.tls.certresolver=letsencrypt-dns
       - traefik.http.routers.${COMPOSE_PROJECT_NAME}.tls.domains[0].sans=*.lucascott.com
+      - wud.watch.digest=true
+      - wud.trigger.include=telegram.report,docker.autoupdate
 
   waves-audiowaveform:
     image: ghcr.io/lucascott/waves-audiowaveform:main
     restart: unless-stopped
     volumes:
       - ./recordings:/monitor
+    labels:
+      - wud.watch.digest=true
+      - wud.trigger.include=telegram.report,docker.autoupdate

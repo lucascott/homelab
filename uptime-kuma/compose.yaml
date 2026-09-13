@@ -1,7 +1,6 @@
 networks:
   reverse-proxy:
     external: true
-
 services:
   uptime-kuma:
     image: louislam/uptime-kuma:2-slim-rootless
@@ -38,4 +37,6 @@ services:
       - traefik.http.routers.${COMPOSE_PROJECT_NAME}.middlewares=internalOnly@file,oidc-auth@file
       - traefik.http.services.${COMPOSE_PROJECT_NAME}.loadbalancer.server.port=3001
       - wud.watch.digest=true
+      - wud.tag.exclude=^.*$
       - wud.link.template=https://github.com/louislam/uptime-kuma/releases
+      - wud.trigger.include=telegram.report,docker.autoupdate

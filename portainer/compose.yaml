@@ -8,7 +8,6 @@ volumes:
 services:
   portainer:
     image: portainer/portainer-ce:alpine
-    container_name: portainer
     restart: unless-stopped
     env_file: AGENT_SECRET.secret
     volumes:
@@ -27,3 +26,4 @@ services:
       - traefik.http.services.${COMPOSE_PROJECT_NAME}.loadbalancer.server.port=9000
       - wud.watch.digest=true
       - wud.link.template=https://github.com/portainer/portainer/releases
+      - wud.trigger.include=telegram.report,docker.autoupdate

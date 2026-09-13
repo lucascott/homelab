@@ -38,3 +38,6 @@ services:
       - --docker_only=true
       # same as prometheus metrics collection frequency
       - --housekeeping_interval=15s
+    labels:
+      - wud.watch.digest=true
+      - wud.trigger.include=telegram.report,docker.autoupdate

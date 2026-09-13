@@ -1,0 +1,3 @@
+<b>New ${container.updateKind.kind} found for container ${container.name}</b>
+${container.updateKind.kind === 'tag' ? "<br>From " + container.updateKind.kind + " " + container.updateKind.localValue + " to " + container.updateKind.remoteValue : ""}
+${container.result && container.result.link ? "<a href='" + container.result.link + "'>Release notes</a>" : ""}

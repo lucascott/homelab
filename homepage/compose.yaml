@@ -29,3 +29,4 @@ services:
       - traefik.http.routers.${COMPOSE_PROJECT_NAME}.middlewares=internalOnly@file
       - traefik.http.services.${COMPOSE_PROJECT_NAME}.loadbalancer.server.port=3000
       - wud.link.template=https://github.com/gethomepage/homepage/releases
+      - wud.trigger.include=telegram.report,docker.autoupdate

@@ -26,3 +26,4 @@ services:
       - traefik.http.services.${COMPOSE_PROJECT_NAME}.loadbalancer.server.port=80
       - wud.watch.digest=true
       - wud.link.template=https://github.com/AdguardTeam/AdGuardHome/releases
+      - wud.trigger.include=telegram.report,docker.autoupdate

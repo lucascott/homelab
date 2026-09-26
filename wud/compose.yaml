@@ -73,4 +73,3 @@ services:
       - traefik.http.services.${COMPOSE_PROJECT_NAME}.loadbalancer.server.port=3000
       - wud.watch.digest=true
       - wud.link.template=https://github.com/getwud/wud/releases
-      - wud.trigger.include=telegram.report,docker.autoupdate

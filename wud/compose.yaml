@@ -14,17 +14,47 @@ networks:
 
 volumes:
   data: {}
+  remote-sockets: {}
 
 services:
+  mainframe-socket-tunnel:
+    build:
+      context: .
+      dockerfile_inline: |
+        FROM alpine:latest
+        RUN apk add --no-cache openssh-client
+    restart: unless-stopped
+    network_mode: host
+    volumes:
+      # this SSH key is without passphrase
+      # remove passphrase with 'ssh-keygen -p -P "$SSH_PASSPHRASE" -N "" -f ~/.ssh/homelab-wud-tunnel.key'
+      - ~/.ssh/homelab-wud-tunnel.key:/root/.ssh/id_ed25519:ro
+      - remote-sockets:/var/run/sockets
+    command: >
+      ssh -N
+      -o ServerAliveInterval=15
+      -o ServerAliveCountMax=3
+      -o ExitOnForwardFailure=yes
+      -o StreamLocalBindUnlink=yes
+      -o StrictHostKeyChecking=accept-new
+      -L /var/run/sockets/docker-mainframe.sock:/var/run/docker.sock
+      luca@192.168.1.226
+
   whatsupdocker:
     image: getwud/wud:latest
     restart: unless-stopped
+    depends_on:
+      - mainframe-socket-tunnel
     secrets:
       - TELEGRAM_BOT_TOKEN
       - OIDC_CLIENT_SECRET
       - DOCKER_HUB_TOKEN
       - GHCR_TOKEN
     environment:
+      # Watchers
+      WUD_WATCHER_BAGIGIO_SOCKET: /var/run/docker.sock
+      WUD_WATCHER_MAINFRAME_SOCKET: /var/run/remote-sockets/docker-mainframe.sock
+      # Auth configs
       WUD_PUBLIC_URL: https://${COMPOSE_PROJECT_NAME}.lucascott.com
       WUD_AUTH_OIDC_AUTH_CLIENTID: fd546872-74bc-4f43-9efe-18748d9aafcd
       # double underscore is unconventional yet correct for WUD (https://getwud.github.io/wud/#/configuration/?id=secret-management)
@@ -57,6 +87,7 @@ services:
       WUD_TRIGGER_DOCKER_AUTOUPDATE_PRUNE: true
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
+      - remote-sockets:/var/run/remote-sockets:ro
       - data:/store
       - ./notify_simplebody.html:/tmp/notify_simplebody.html:ro
       - ./report_simplebody.html:/tmp/report_simplebody.html:ro

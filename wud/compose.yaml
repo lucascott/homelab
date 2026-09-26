@@ -30,6 +30,7 @@ services:
       # double underscore is unconventional yet correct for WUD (https://getwud.github.io/wud/#/configuration/?id=secret-management)
       WUD_AUTH_OIDC_AUTH_CLIENTSECRET__FILE: /run/secrets/OIDC_CLIENT_SECRET
       WUD_AUTH_OIDC_AUTH_DISCOVERY: https://auth.lucascott.com/.well-known/openid-configuration
+      WUD_AUTH_OIDC_AUTH_ADMINGROUP: wud-admins
       WUD_REGISTRY_HUB_PUBLIC_LOGIN: lucascott
       WUD_REGISTRY_HUB_PUBLIC_PASSWORD__FILE: /run/secrets/DOCKER_HUB_TOKEN
       WUD_REGISTRY_GHCR_PUBLIC_USERNAME: lucascott

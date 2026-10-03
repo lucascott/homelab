@@ -1,8 +1,8 @@
+name: wud-entropy
+
 secrets:
-  TELEGRAM_BOT_TOKEN:
-    file: TELEGRAM_BOT_TOKEN.secret
   OIDC_CLIENT_SECRET:
-    file: OIDC_CLIENT_SECRET.secret
+    file: OIDC_ENTROPY_CLIENT_SECRET.secret
   DOCKER_HUB_TOKEN:
     file: DOCKER_HUB_TOKEN.secret
   GHCR_TOKEN:
@@ -17,7 +17,7 @@ volumes:
   remote-sockets: {}
 
 services:
-  mainframe-socket-tunnel:
+  e-docker-socket-tunnel:
     build:
       context: .
       dockerfile_inline: |
@@ -27,36 +27,59 @@ services:
     network_mode: host
     volumes:
       # Passphrase-less SSH key
-      # remove passphrase with 'ssh-keygen -p -P "$SSH_PASSPHRASE" -N "" -f ~/.ssh/homelab-wud-tunnel.key'
-      - ~/.ssh/homelab-wud-tunnel.key:/root/.ssh/id_ed25519:ro
+      - ~/.ssh/entropy.key:/root/.ssh/id_ed25519:ro
       - remote-sockets:/var/run/sockets
     command: >
       ssh -N
+      -o ProxyCommand="ssh -o StrictHostKeyChecking=accept-new -W %h:%p lucascott@bastion.entropy.fi"
       -o ServerAliveInterval=15
       -o ServerAliveCountMax=3
       -o ExitOnForwardFailure=yes
       -o StreamLocalBindUnlink=yes
       -o StrictHostKeyChecking=accept-new
-      -L /var/run/sockets/docker-mainframe.sock:/var/run/docker.sock
-      luca@192.168.1.226
+      -L /var/run/sockets/docker-e-docker.sock:/var/run/docker.sock
+      lucascott@10.90.9.200
+
+  e-proxy-socket-tunnel:
+    build:
+      context: .
+      dockerfile_inline: |
+        FROM alpine:latest
+        RUN apk add --no-cache openssh-client
+    restart: unless-stopped
+    network_mode: host
+    volumes:
+      # Passphrase-less SSH key
+      - ~/.ssh/entropy.key:/root/.ssh/id_ed25519:ro
+      - remote-sockets:/var/run/sockets
+    command: >
+      ssh -N
+      -o ProxyCommand="ssh -o StrictHostKeyChecking=accept-new -W %h:%p lucascott@bastion.entropy.fi"
+      -o ServerAliveInterval=15
+      -o ServerAliveCountMax=3
+      -o ExitOnForwardFailure=yes
+      -o StreamLocalBindUnlink=yes
+      -o StrictHostKeyChecking=accept-new
+      -L /var/run/sockets/docker-e-proxy.sock:/var/run/docker.sock
+      lucascott@10.90.9.201
 
   whatsupdocker:
     image: getwud/wud:latest
     restart: unless-stopped
     depends_on:
-      - mainframe-socket-tunnel
+      - e-docker-socket-tunnel
+      - e-proxy-socket-tunnel
     secrets:
-      - TELEGRAM_BOT_TOKEN
       - OIDC_CLIENT_SECRET
       - DOCKER_HUB_TOKEN
       - GHCR_TOKEN
     environment:
       # Watchers
-      WUD_WATCHER_BAGIGIO_SOCKET: /var/run/docker.sock
-      WUD_WATCHER_MAINFRAME_SOCKET: /var/run/remote-sockets/docker-mainframe.sock
+      WUD_WATCHER_E-PROXY_SOCKET: /var/run/remote-sockets/docker-e-proxy.sock
+      WUD_WATCHER_E-DOCKER_SOCKET: /var/run/remote-sockets/docker-e-docker.sock
       # Auth configs
-      WUD_PUBLIC_URL: https://${COMPOSE_PROJECT_NAME}.lucascott.com
-      WUD_AUTH_OIDC_AUTH_CLIENTID: fd546872-74bc-4f43-9efe-18748d9aafcd
+      WUD_PUBLIC_URL: https://wud-entropy.lucascott.com
+      WUD_AUTH_OIDC_AUTH_CLIENTID: 4af431b5-6056-40be-bc0c-439c0396d678
       # double underscore is unconventional yet correct for WUD (https://getwud.github.io/wud/#/configuration/?id=secret-management)
       WUD_AUTH_OIDC_AUTH_CLIENTSECRET__FILE: /run/secrets/OIDC_CLIENT_SECRET
       WUD_AUTH_OIDC_AUTH_DISCOVERY: https://auth.lucascott.com/.well-known/openid-configuration
@@ -65,19 +88,6 @@ services:
       WUD_REGISTRY_HUB_PUBLIC_PASSWORD__FILE: /run/secrets/DOCKER_HUB_TOKEN
       WUD_REGISTRY_GHCR_PUBLIC_USERNAME: lucascott
       WUD_REGISTRY_GHCR_PUBLIC_TOKEN__FILE: /run/secrets/GHCR_TOKEN
-      # trigger for update notifications
-      WUD_TRIGGER_TELEGRAM_NOTIFY_BOTTOKEN__FILE: /run/secrets/TELEGRAM_BOT_TOKEN
-      WUD_TRIGGER_TELEGRAM_NOTIFY_CHATID: 30646137
-      WUD_TRIGGER_TELEGRAM_NOTIFY_DISABLETITLE: true
-      WUD_TRIGGER_TELEGRAM_NOTIFY_MESSAGEFORMAT: HTML
-      WUD_TRIGGER_TELEGRAM_NOTIFY_SIMPLEBODY__FILE: /tmp/notify_simplebody.html
-      # trigger for autoupdate reports
-      WUD_TRIGGER_TELEGRAM_REPORT_BOTTOKEN__FILE: /run/secrets/TELEGRAM_BOT_TOKEN
-      WUD_TRIGGER_TELEGRAM_REPORT_INCLUDEBYDEFAULT: false
-      WUD_TRIGGER_TELEGRAM_REPORT_CHATID: 30646137
-      WUD_TRIGGER_TELEGRAM_REPORT_DISABLETITLE: true
-      WUD_TRIGGER_TELEGRAM_REPORT_MESSAGEFORMAT: HTML
-      WUD_TRIGGER_TELEGRAM_REPORT_SIMPLEBODY__FILE: /tmp/report_simplebody.html
       # manual trigger for updating containers
       WUD_TRIGGER_DOCKER_UPDATE_AUTO: false
       WUD_TRIGGER_DOCKER_UPDATE_PRUNE: true
@@ -86,16 +96,13 @@ services:
       WUD_TRIGGER_DOCKER_AUTOUPDATE_AUTO: true
       WUD_TRIGGER_DOCKER_AUTOUPDATE_PRUNE: true
     volumes:
-      - /var/run/docker.sock:/var/run/docker.sock
       - remote-sockets:/var/run/remote-sockets:ro
       - data:/store
-      - ./notify_simplebody.html:/tmp/notify_simplebody.html:ro
-      - ./report_simplebody.html:/tmp/report_simplebody.html:ro
     networks:
       - reverse-proxy
     labels:
       - traefik.enable=true
-      - traefik.http.routers.${COMPOSE_PROJECT_NAME}.rule=Host(`${COMPOSE_PROJECT_NAME}.lucascott.com`)
+      - traefik.http.routers.${COMPOSE_PROJECT_NAME}.rule=Host(`wud-entropy.lucascott.com`)
       - traefik.http.routers.${COMPOSE_PROJECT_NAME}.entrypoints=websecure
       - traefik.http.routers.${COMPOSE_PROJECT_NAME}.tls=true
       - traefik.http.routers.${COMPOSE_PROJECT_NAME}.tls.certresolver=letsencrypt-dns
